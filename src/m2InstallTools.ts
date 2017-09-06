@@ -11,7 +11,7 @@ import path = require('path');
 import os = require('os');
 import cp = require('child_process');
 import { showGoStatus, hideGoStatus } from './m2Status';
-import { getGoRuntimePath, resolvePath } from './m2Path';
+import { getMonkey2RuntimePath, resolvePath } from './m2Path';
 import { outputChannel } from './m2Status';
 import { getBinPath, getToolsGopath, getGoVersion, SemVersion, isVendorSupported, getCurrentGoPath } from './util';
 import { goLiveErrorsEnabled } from './m2LiveErrors';
@@ -156,7 +156,7 @@ function installTools(goVersion: SemVersion, missing?: string[]) {
 	// Else use the Current Gopath
 	let toolsGopath = getToolsGopath() || getCurrentGoPath();
 	if (toolsGopath) {
-		envForTools['GOPATH'] = toolsGopath;
+		envForTools['M2PATH'] = toolsGopath;
 	} else {
 		vscode.window.showInformationMessage('Cannot install Go tools. Set either go.gopath or go.toolsGopath in settings.', 'Open User settings', 'Open Workspace Settings').then(selected => {
 			if (selected === 'Open User settings') {
@@ -179,7 +179,7 @@ function installTools(goVersion: SemVersion, missing?: string[]) {
 
 	missing.reduce((res: Promise<string[]>, tool: string) => {
 		return res.then(sofar => new Promise<string[]>((resolve, reject) => {
-			cp.execFile(goRuntimePath, ['get', '-u', '-v', tools[tool]], { env: envForTools }, (err, stdout, stderr) => {
+			cp.execFile(monkey2RuntimePath, ['get', '-u', '-v', tools[tool]], { env: envForTools }, (err, stdout, stderr) => {
 				if (err) {
 					outputChannel.appendLine('Installing ' + tools[tool] + ' FAILED');
 					let failureReason = tool + ';;' + err + stdout.toString() + stderr.toString();
@@ -231,20 +231,20 @@ export function updateGoPathGoRootFromConfig(): Promise<void> {
 		process.env['GOROOT'] = goroot;
 	}
 
-	if (process.env['GOPATH']) {
+	if (process.env['M2PATH']) {
 		return Promise.resolve();
 	}
 
 	// If GOPATH is still not set, then use the one from `go env`
 	let goRuntimePath = getGoRuntimePath();
 	return new Promise<void>((resolve, reject) => {
-		cp.execFile(goRuntimePath, ['env', 'GOPATH'], (err, stdout, stderr) => {
+		cp.execFile(goRuntimePath, ['env', 'M2PATH'], (err, stdout, stderr) => {
 			if (err) {
 				return reject();
 			}
 			let envOutput = stdout.split('\n');
-			if (!process.env['GOPATH'] && envOutput[0].trim()) {
-				process.env['GOPATH'] = envOutput[0].trim();
+			if (!process.env['M2PATH'] && envOutput[0].trim()) {
+				process.env['M2PATH'] = envOutput[0].trim();
 			}
 			return resolve();
 		});

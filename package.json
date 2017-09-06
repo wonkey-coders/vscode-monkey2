@@ -1,12 +1,12 @@
 {
-  "name": "Go",
-  "version": "0.6.64",
-  "publisher": "lukehoban",
-  "description": "Rich Go language support for Visual Studio Code",
+  "name": "Monkey2",
+  "version": "0.0.2",
+  "publisher": "nitrologic",
+  "description": "Monkey2 language support for Visual Studio Code",
   "author": {
-    "name": "Microsoft Corporation - Development Labs"
+    "name": "Simon Armstrong"
   },
-  "icon": "images/goIcon.png",
+  "icon": "images/monkey2Icon.png",
   "categories": [
     "Languages",
     "Snippets",
@@ -21,7 +21,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/Microsoft/vscode-go.git"
+    "url": "https://github.com/nitrologic/vscode-monkey2.git"
   },
   "scripts": {
     "vscode:prepublish": "tsc -p ./",
@@ -55,177 +55,177 @@
     "vscode": "^1.9.0"
   },
   "activationEvents": [
-    "onLanguage:go",
-    "onCommand:go.gopath",
-    "onCommand:go.tools.install",
-    "onCommand:go.debug.startSession"
+    "onLanguage:monkey2",
+    "onCommand:monkey2.monkey2path",
+    "onCommand:monkey2.tools.install",
+    "onCommand:monkey2.debug.startSession"
   ],
-  "main": "./out/src/goMain",
+  "main": "./out/src/m2Main",
   "contributes": {
     "languages": [
       {
-        "id": "go",
+        "id": "monkey2",
         "extensions": [
-          ".go"
+          ".monkey2"
         ],
         "aliases": [
-          "Go"
+          "Monkey2"
         ]
       }
     ],
     "snippets": [
       {
-        "language": "go",
-        "path": "./snippets/go.json"
+        "language": "monkey2",
+        "path": "./snippets/monkey2.json"
       }
     ],
     "commands": [
       {
-        "command": "go.gopath",
-        "title": "Go: Current GOPATH",
-        "description": "See the currently set GOPATH."
+        "command": "m2.m2path",
+        "title": "Monkey2: Current M2PATH",
+        "description": "See the currently set M2PATH."
       },
       {
-        "command": "go.test.cursor",
-        "title": "Go: Test Function At Cursor",
+        "command": "m2.test.cursor",
+        "title": "Monkey2: Test Function At Cursor",
         "description": "Runs a unit test at the cursor."
       },
       {
-        "command": "go.test.file",
-        "title": "Go: Test File",
+        "command": "m2.test.file",
+        "title": "Monkey2: Test File",
         "description": "Runs all unit tests in the current file."
       },
       {
-        "command": "go.test.package",
-        "title": "Go: Test Package",
+        "command": "m2.test.package",
+        "title": "Monkey2: Test Package",
         "description": "Runs all unit tests in the package of the current file."
       },
       {
-        "command": "go.test.workspace",
-        "title": "Go: Test All Packages In Workspace",
+        "command": "m2.test.workspace",
+        "title": "Monkey2: Test All Packages In Workspace",
         "description": "Runs all unit tests from all packages in the current workspace."
       },
       {
-        "command": "go.test.previous",
-        "title": "Go: Test Previous",
+        "command": "m2.test.previous",
+        "title": "Monkey2: Test Previous",
         "description": "Re-runs the last executed test."
       },
       {
-        "command": "go.test.coverage",
-        "title": "Go: Toggle Test Coverage In Current Package",
+        "command": "m2.test.coverage",
+        "title": "Monkey2: Toggle Test Coverage In Current Package",
         "description": "Displays test coverage in the current package."
       },
       {
-        "command": "go.test.generate.package",
-        "title": "Go: Generate Unit Tests For Package",
+        "command": "m2.test.generate.package",
+        "title": "Monkey2: Generate Unit Tests For Package",
         "description": "Generates unit tests for the current package"
       },
       {
-        "command": "go.test.generate.file",
-        "title": "Go: Generate Unit Tests For File",
+        "command": "m2.test.generate.file",
+        "title": "Monkey2: Generate Unit Tests For File",
         "description": "Generates unit tests for the current file"
       },
       {
-        "command": "go.test.generate.function",
-        "title": "Go: Generate Unit Tests For Function",
+        "command": "m2.test.generate.function",
+        "title": "Monkey2: Generate Unit Tests For Function",
         "description": "Generates unit tests for the selected function in the current file"
       },
       {
-        "command": "go.impl.cursor",
-        "title": "Go: Generate Interface Stubs",
+        "command": "m2.impl.cursor",
+        "title": "Monkey2: Generate Interface Stubs",
         "description": "Generates method stub for implementing the provided interface and inserts at the cursor."
       },
       {
-        "command": "go.import.add",
-        "title": "Go: Add Import",
+        "command": "m2.import.add",
+        "title": "Monkey2: Add Import",
         "description": "Add an import declaration"
       },
       {
-        "command": "go.tools.install",
-        "title": "Go: Install/Update Tools",
-        "description": "install/update the required go packages"
+        "command": "m2.tools.install",
+        "title": "Monkey2: Install/Update Tools",
+        "description": "install/update the required monkey2 packages"
       },
       {
-        "command": "go.toggle.test.file",
-        "title": "Go: Toggle Test File",
+        "command": "m2.toggle.test.file",
+        "title": "Monkey2: Toggle Test File",
         "description": "Toggles between file in current active editor and the corresponding test file."
       },
       {
-        "command": "go.add.tags",
-        "title": "Go: Add Tags To Struct Fields",
+        "command": "m2.add.tags",
+        "title": "Monkey2: Add Tags To Struct Fields",
         "description": "Add tags configured in go.addTags setting to selected struct using gomodifytags"
       },
       {
-        "command": "go.remove.tags",
-        "title": "Go: Remove Tags From Struct Fields",
+        "command": "m2.remove.tags",
+        "title": "Monkey2: Remove Tags From Struct Fields",
         "description": "Remove tags configured in go.removeTags setting from selected struct using gomodifytags"
       },
       {
-        "command": "go.show.commands",
-        "title": "Go: Show Other Commands...",
+        "command": "m2.show.commands",
+        "title": "Monkey2: Show Other Commands...",
         "description": "Shows all commands from the Go extension in the wuick pick"
       },
       {
-        "command": "go.browse.packages",
-        "title": "Go: Browse Packages",
+        "command": "m2.browse.packages",
+        "title": "Monkey2: Browse Packages",
         "description": "Browse packages and Go files inside the packages."
       }
     ],
     "debuggers": [
       {
-        "type": "go",
-        "label": "Go",
+        "type": "m2",
+        "label": "Monkey2",
         "enableBreakpointsFor": {
           "languageIds": [
-            "go"
+            "m2"
           ]
         },
         "program": "./out/src/debugAdapter/goDebug.js",
         "runtime": "node",
         "languages": [
-          "go"
+          "m2"
         ],
-        "startSessionCommand": "go.debug.startSession",
+        "startSessionCommand": "m2.debug.startSession",
         "configurationSnippets": [
           {
-            "label": "Go: Launch package",
+            "label": "Monkey2: Launch package",
             "description": "Debug the package in the program attribute",
             "body": {
               "name": "${2:Launch Package}",
-              "type": "go",
+              "type": "m2",
               "request": "launch",
               "mode": "debug",
               "program": "^\"\\${workspaceRoot}${1:}\""
             }
           },
           {
-            "label": "Go: Launch file",
+            "label": "Monkey2: Launch file",
             "description": "Debug the file in the program attribute",
             "body": {
               "name": "${2:Launch file}",
-              "type": "go",
+              "type": "m2",
               "request": "launch",
               "mode": "debug",
               "program": "^\"${1:\\${file}}\""
             }
           },
           {
-            "label": "Go: Launch test package",
+            "label": "Monkey2: Launch test package",
             "description": "Debug the test package in the program attribute",
             "body": {
               "name": "${2:Launch test package}",
-              "type": "go",
+              "type": "m2",
               "request": "launch",
               "mode": "test",
               "program": "^\"\\${workspaceRoot}${1:}\""
             }
           },
           {
-            "label": "Go: Launch test function",
+            "label": "Monkey2: Launch test function",
             "description": "Debug the test function in the args, ensure program attributes points to right package",
             "body": {
               "name": "${3:Launch test function}",
-              "type": "go",
+              "type": "m2",
               "request": "launch",
               "mode": "test",
               "program": "^\"\\${workspaceRoot}${1:}\"",
@@ -239,7 +239,7 @@
         "initialConfigurations": [
           {
             "name": "Launch",
-            "type": "go",
+            "type": "m2",
             "request": "launch",
             "mode": "debug",
             "remotePath": "",
@@ -356,9 +356,9 @@
     ],
     "configuration": {
       "type": "object",
-      "title": "Go configuration",
+      "title": "Monkey2 configuration",
       "properties": {
-        "go.buildOnSave": {
+        "m2.buildOnSave": {
           "type": "string",
           "enum": [
             "package",
@@ -368,7 +368,7 @@
           "default": "package",
           "description": "On save, compiles the current workspace, current package or nothing at all."
         },
-        "go.buildFlags": {
+        "m2.buildFlags": {
           "type": "array",
           "items": {
             "type": "string"
@@ -376,12 +376,12 @@
           "default": [],
           "description": "Flags to `go build`/`go test` used during build-on-save or running tests. (e.g. ['-ldflags=\"-s\"'])"
         },
-        "go.buildTags": {
+        "m2.buildTags": {
           "type": "string",
           "default": "",
           "description": "The Go build tags to use for all commands that support a `-tags '...'` argument"
         },
-        "go.lintOnSave": {
+        "m2.lintOnSave": {
           "type": "string",
           "enum": [
             "package",
@@ -391,17 +391,17 @@
           "default": "package",
           "description": "On save, runs the configured Lint tool on current workspace, current package or nothing at all."
         },
-        "go.lintTool": {
+        "m2.lintTool": {
           "type": "string",
-          "default": "golint",
+          "default": "m2lint",
           "description": "Specifies Lint tool name.",
           "enum": [
-            "golint",
-            "gometalinter",
+            "m2lint",
+            "m2metalinter",
             "megacheck"
           ]
         },
-        "go.lintFlags": {
+        "m2.lintFlags": {
           "type": "array",
           "items": {
             "type": "string"
@@ -409,7 +409,7 @@
           "default": [],
           "description": "Flags to pass to Lint tool (e.g. [\"-min_confidence=.8\"])"
         },
-        "go.vetOnSave": {
+        "m2.vetOnSave": {
           "type": "string",
           "enum": [
             "package",
@@ -419,7 +419,7 @@
           "default": "package",
           "description": "On save, runs 'go vet' on current workspace, current package or nothing."
         },
-        "go.vetFlags": {
+        "m2.vetFlags": {
           "type": "array",
           "items": {
             "type": "string"
@@ -427,22 +427,22 @@
           "default": [],
           "description": "Flags to pass to `go vet` (e.g. ['-all', '-shadow'])"
         },
-        "go.formatOnSave": {
+        "m2.formatOnSave": {
           "type": "boolean",
           "default": true,
           "description": "Runs formatting tool on save."
         },
-        "go.formatTool": {
+        "m2.formatTool": {
           "type": "string",
-          "default": "goreturns",
+          "default": "m2returns",
           "description": "Pick 'gofmt', 'goimports' or 'goreturns' to run on format.",
           "enum": [
-            "gofmt",
-            "goimports",
-            "goreturns"
+            "m2fmt",
+            "m2imports",
+            "m2returns"
           ]
         },
-        "go.formatFlags": {
+        "m2.formatFlags": {
           "type": "array",
           "items": {
             "type": "string"
@@ -450,17 +450,17 @@
           "default": [],
           "description": "Flags to pass to format tool (e.g. ['-s'])"
         },
-        "go.useDiffForFormatting": {
+        "m2.useDiffForFormatting": {
           "type": "boolean",
           "default": true,
           "description": "Run the formatting tools with the -d flag"
         },
-        "go.inferGopath": {
+        "m2.inferGopath": {
           "type": "boolean",
           "default": false,
           "description": "Infer GOPATH from the workspace root."
         },
-        "go.gopath": {
+        "m2.gopath": {
           "type": [
             "string",
             "null"
@@ -468,12 +468,12 @@
           "default": null,
           "description": "Specify GOPATH here to override the one that is set as environment variable. The inferred GOPATH from workspace root overrides this, if go.inferGopath is set to true."
         },
-        "go.toolsGopath": {
+        "m2.toolsGopath": {
           "type": "string",
           "default": "",
           "description": "Location to install the Go tools that the extension depends on if you don't want them in your GOPATH."
         },
-        "go.goroot": {
+        "m2.goroot": {
           "type": [
             "string",
             "null"
@@ -481,22 +481,22 @@
           "default": null,
           "description": "Specifies the GOROOT to use when no environment variable is set."
         },
-        "go.testOnSave": {
+        "m2.testOnSave": {
           "type": "boolean",
           "default": false,
           "description": "Run 'go test' on save for current package. It is not advised to set this to `true` when you have Auto Save enabled."
         },
-        "go.coverOnSave": {
+        "m2.coverOnSave": {
           "type": "boolean",
           "default": false,
           "description": "If true, runs 'go test -coverprofile' on save and shows test coverage."
         },
-        "go.coverOnTestPackage": {
+        "m2.coverOnTestPackage": {
           "type": "boolean",
           "default": true,
           "description": "If true, shows test coverage when Go: Test Package command is run."
         },
-        "go.coverageOptions": {
+        "m2.coverageOptions": {
           "type": "string",
           "enum": [
             "showCoveredCodeOnly",
@@ -506,7 +506,7 @@
           "default": "showBothCoveredAndUncoveredCode",
           "description": "Use these options to control whether only covered or only uncovered code or both should be highlighted after running test coverage"
         },
-        "go.coverageDecorator": {
+        "m2.coverageDecorator": {
           "type": "string",
           "enum": [
             "highlight",
@@ -515,22 +515,22 @@
           "default": "highlight",
           "description": "This option lets you choose the way to display code coverage. Highlight, as its name states, highlights the line in red or green, gutter shows the colors in the gutter of the editor."
         },
-        "go.testTimeout": {
+        "m2.testTimeout": {
           "type": "string",
           "default": "30s",
           "description": "Specifies the timeout for go test in ParseDuration format."
         },
-        "go.testEnvVars": {
+        "m2.testEnvVars": {
           "type": "object",
           "default": {},
           "description": "Environment variables that will passed to the process that runs the Go tests"
         },
-        "go.testEnvFile": {
+        "m2.testEnvFile": {
           "type": "string",
           "default": null,
           "description": "Absolute path to a file containing environment variables definitions. File contents should be of the form key=value."
         },
-        "go.testFlags": {
+        "m2.testFlags": {
           "type": [
             "array",
             "null"
@@ -541,52 +541,52 @@
           "default": null,
           "description": "Flags to pass to `go test`. If null, then buildFlags will be used."
         },
-        "go.toolsEnvVars": {
+        "m2.toolsEnvVars": {
           "type": "object",
           "default": {},
           "description": "Environment variables that will passed to the processes that run the Go tools (e.g. CGO_CFLAGS)"
         },
-        "go.gocodeAutoBuild": {
+        "m2.gocodeAutoBuild": {
           "type": "boolean",
           "default": true,
           "description": "Enable gocode's autobuild feature"
         },
-        "go.useCodeSnippetsOnFunctionSuggest": {
+        "m2.useCodeSnippetsOnFunctionSuggest": {
           "type": "boolean",
           "default": false,
           "description": "Complete functions with their parameter signature"
         },
-        "go.autocompleteUnimportedPackages": {
+        "m2.autocompleteUnimportedPackages": {
           "type": "boolean",
           "default": false,
           "description": "Include unimported packages in auto-complete suggestions."
         },
-        "go.docsTool": {
+        "m2.docsTool": {
           "type": "string",
-          "default": "godoc",
+          "default": "m2doc",
           "description": "Pick 'godoc' or 'gogetdoc' to get documentation. In Go 1.5, godoc is used regardless of the choice here.",
           "enum": [
-            "godoc",
-            "gogetdoc",
+            "m2doc",
+            "m2getdoc",
             "guru"
           ]
         },
-        "go.useLanguageServer": {
+        "m2.useLanguageServer": {
           "type": "boolean",
           "default": false,
           "description": "Experimental: Not available in Windows. Use Go language server from Sourcegraph for Hover, Definition, Find All References, Signature Help, File Outline and Workspace Symbol features"
         },
-        "go.languageServerFlags": {
+        "m2.languageServerFlags": {
           "type": "array",
           "default": [],
           "description": "Flags like -trace and -logfile to be used while running the language server."
         },
-        "go.gotoSymbol.includeImports": {
+        "m2.gotoSymbol.includeImports": {
           "type": "boolean",
           "default": false,
           "description": "If false, the import statements will be excluded while using the Go to Symbol in File feature"
         },
-        "go.enableCodeLens": {
+        "m2.enableCodeLens": {
           "type": "object",
           "properties": {
             "references": {
@@ -606,7 +606,7 @@
           },
           "description": "Feature level setting to enable/disable code lens for references and run/debug tests"
         },
-        "go.addTags": {
+        "m2.addTags": {
           "type": "object",
           "properties": {
             "promptForTags": {
@@ -642,7 +642,7 @@
           },
           "description": "Tags and options configured here will be used by the Add Tags command to add tags to struct fields. If promptForTags is true, then user will be prompted for tags and options. By default, json tags are added."
         },
-        "go.liveErrors": {
+        "m2.liveErrors": {
           "type": "object",
           "properties": {
             "enabled": {
@@ -662,7 +662,7 @@
           },
           "description": "Use gotype on the file currently being edited and report any semantic or syntactic errors found after configured delay."
         },
-        "go.removeTags": {
+        "m2.removeTags": {
           "type": "object",
           "properties": {
             "promptForTags": {
@@ -688,7 +688,7 @@
           },
           "description": "Tags and options configured here will be used by the Remove Tags command to remove tags to struct fields. If promptForTags is true, then user will be prompted for tags and options. By default, all tags and options will be removed."
         },
-        "go.editorContextMenuCommands": {
+        "m2.editorContextMenuCommands": {
           "type": "object",
           "properties": {
             "toggleTestFile": {
@@ -762,7 +762,7 @@
           },
           "description": "Experimental Feature: Enable/Disable entries from the context menu in the editor."
         },
-        "go.gotoSymbol.ignoreFolders": {
+        "m2.gotoSymbol.ignoreFolders": {
           "type": "array",
           "items": {
             "type": "string"
@@ -776,63 +776,63 @@
       "editor/context": [
         {
           "when": "editorTextFocus && config.go.editorContextMenuCommands.toggleTestFile && resourceLangId == go",
-          "command": "go.toggle.test.file",
-          "group": "Go group 1"
+          "command": "m2.toggle.test.file",
+          "group": "Monkey2 group 1"
         },
         {
           "when": "editorTextFocus && config.go.editorContextMenuCommands.addTags && resourceLangId == go",
-          "command": "go.add.tags",
-          "group": "Go group 1"
+          "command": "m2.add.tags",
+          "group": "Monkey2 group 1"
         },
         {
           "when": "editorTextFocus && config.go.editorContextMenuCommands.removeTags && resourceLangId == go",
-          "command": "go.remove.tags",
-          "group": "Go group 1"
+          "command": "m2.remove.tags",
+          "group": "Monkey2 group 1"
         },
         {
           "when": "editorTextFocus && config.go.editorContextMenuCommands.testAtCursor && resourceLangId == go && !config.editor.codeLens",
-          "command": "go.test.cursor",
-          "group": "Go group 1"
+          "command": "m2.test.cursor",
+          "group": "Monkey2 group 1"
         },
         {
           "when": "editorTextFocus && config.go.editorContextMenuCommands.testFile && resourceLangId == go",
-          "command": "go.test.file",
-          "group": "Go group 1"
+          "command": "m2.test.file",
+          "group": "Monkey2 group 1"
         },
         {
           "when": "editorTextFocus && config.go.editorContextMenuCommands.testPackage && resourceLangId == go",
-          "command": "go.test.package",
-          "group": "Go group 1"
+          "command": "m2.test.package",
+          "group": "Monkey2 group 1"
         },
         {
           "when": "editorTextFocus && config.go.editorContextMenuCommands.generateTestForFunction && resourceLangId == go",
-          "command": "go.test.generate.function",
-          "group": "Go group 1"
+          "command": "m2.test.generate.function",
+          "group": "Monkey2 group 1"
         },
         {
           "when": "editorTextFocus && config.go.editorContextMenuCommands.generateTestForFile && resourceLangId == go",
-          "command": "go.test.generate.file",
-          "group": "Go group 1"
+          "command": "m2.test.generate.file",
+          "group": "Monkey2 group 1"
         },
         {
           "when": "editorTextFocus && config.go.editorContextMenuCommands.generateTestForPackage && resourceLangId == go",
-          "command": "go.test.generate.package",
-          "group": "Go group 1"
+          "command": "m2.test.generate.package",
+          "group": "Monkey2 group 1"
         },
         {
           "when": "editorTextFocus && config.go.editorContextMenuCommands.addImport && resourceLangId == go",
-          "command": "go.import.add",
-          "group": "Go group 1"
+          "command": "m2.import.add",
+          "group": "Monkey2 group 1"
         },
         {
           "when": "editorTextFocus && config.go.editorContextMenuCommands.testCoverage && resourceLangId == go",
-          "command": "go.test.coverage",
-          "group": "Go group 1"
+          "command": "m2.test.coverage",
+          "group": "Monkey2 group 1"
         },
         {
           "when": "editorTextFocus && resourceLangId == go",
-          "command": "go.show.commands",
-          "group": "Go group 2"
+          "command": "m2.show.commands",
+          "group": "Monkey2 group 2"
         }
       ]
     }

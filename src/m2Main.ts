@@ -72,7 +72,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 		if (langServerAvailable) {
 			let langServerFlags: string[] = vscode.workspace.getConfiguration('go')['languageServerFlags'] || [];
 			// Language Server needs GOPATH to be in process.env
-			process.env['GOPATH'] = getCurrentGoPath();
+			process.env['M2PATH'] = getCurrentGoPath();
 			const c = new LanguageClient(
 				'go-langserver',
 				{
@@ -249,7 +249,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 				'mode': 'debug',
 				'program': activeEditor.document.fileName,
 				'env': {
-					'GOPATH': getCurrentGoPath()
+					'M2PATH': getCurrentGoPath()
 				}
 			});
 		}

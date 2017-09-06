@@ -11,7 +11,7 @@ import { readFileSync, existsSync, lstatSync } from 'fs';
 import { basename, dirname, extname } from 'path';
 import { spawn, ChildProcess, execSync, spawnSync } from 'child_process';
 import { Client, RPCConnection } from 'json-rpc2';
-import { parseEnvFile, getBinPathWithPreferredGopath, resolvePath, stripBOM, getGoRuntimePath, getInferredGopath, getCurrentGoWorkspaceFromGOPATH } from '../m2Path';
+import { parseEnvFile, getBinPathWithPreferredGopath, resolvePath, stripBOM, getMonkey2RuntimePath, getInferredGopath, getCurrentWorkspaceFromM2PATH } from '../m2Path';
 import * as logger from 'vscode-debug-logger';
 import * as FS from 'fs';
 
@@ -229,11 +229,11 @@ class Delve {
 
 			let env = Object.assign({}, process.env, fileEnv, launchArgs.env);
 
-			// If file/package to debug is not under env['GOPATH'], then infer it from the file/package path
+			// If file/package to debug is not under env['M2PATH'], then infer it from the file/package path
 			// Not applicable to exec mode in which case `program` need not point to source code under GOPATH
-			let programNotUnderGopath = !env['GOPATH'] || !getCurrentGoWorkspaceFromGOPATH(env['GOPATH'], isProgramDirectory ? program : path.dirname(program));
+			let programNotUnderGopath = !env['M2PATH'] || !getCurrentWorkspaceFromM2PATH(env['M2PATH'], isProgramDirectory ? program : path.dirname(program));
 			if (programNotUnderGopath && (mode === 'debug' || mode === 'test')) {
-				env['GOPATH'] = getInferredGopath(isProgramDirectory ? program : path.dirname(program));
+				env['M2PATH'] = getInferredGopath(isProgramDirectory ? program : path.dirname(program));
 			}
 
 			if (!!launchArgs.noDebug) {
@@ -269,10 +269,10 @@ class Delve {
 				return;
 			}
 
-			let dlv = getBinPathWithPreferredGopath('dlv', resolvePath(env['GOPATH']), process.env['GOPATH']);
+			let dlv = getBinPathWithPreferredGopath('dlv', resolvePath(env['M2PATH']), process.env['M2PATH']);
 
 			if (!existsSync(dlv)) {
-				verbose(`Couldnt find dlv at ${process.env['GOPATH']}${env['GOPATH'] ? ', ' + env['GOPATH'] : ''} or ${process.env['PATH']}`);
+				verbose(`Couldnt find dlv at ${process.env['M2PATH']}${env['M2PATH'] ? ', ' + env['M2PATH'] : ''} or ${process.env['PATH']}`);
 				return reject(`Cannot find Delve debugger. Install from https://github.com/derekparker/delve & ensure it is in your "GOPATH/bin" or "PATH".`);
 			}
 			verbose('Using dlv at: ' + dlv);

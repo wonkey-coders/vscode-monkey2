@@ -7,24 +7,24 @@ import * as assert from 'assert';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { GoHoverProvider } from '../src/goExtraInfo';
-import { GoCompletionItemProvider } from '../src/goSuggest';
-import { GoSignatureHelpProvider } from '../src/goSignature';
-import { GoDefinitionProvider } from '../src/goDeclaration';
-import { getWorkspaceSymbols } from '../src/goSymbol';
-import { check } from '../src/goCheck';
+import { GoHoverProvider } from '../src/m2ExtraInfo';
+import { GoCompletionItemProvider } from '../src/m2Suggest';
+import { GoSignatureHelpProvider } from '../src/m2Signature';
+import { GoDefinitionProvider } from '../src/m2Declaration';
+import { getWorkspaceSymbols } from '../src/m2Symbol';
+import { check } from '../src/m2Check';
 import cp = require('child_process');
 import { getEditsFromUnifiedDiffStr, getEdits } from '../src/diffUtils';
 import jsDiff = require('diff');
-import { testCurrentFile } from '../src/goTest';
+import { testCurrentFile } from '../src/m2Test';
 import { getBinPath, getGoVersion, isVendorSupported } from '../src/util';
-import { documentSymbols } from '../src/goOutline';
-import { listPackages } from '../src/goImport';
-import { generateTestCurrentFile, generateTestCurrentPackage, generateTestCurrentFunction } from '../src/goGenerateTests';
-import { goListAll } from '../src/goPackages';
+import { documentSymbols } from '../src/m2Outline';
+import { listPackages } from '../src/m2Import';
+import { generateTestCurrentFile, generateTestCurrentPackage, generateTestCurrentFunction } from '../src/m2GenerateTests';
+import { goListAll } from '../src/m2Packages';
 
 suite('Go Extension Tests', () => {
-	let gopath = process.env['GOPATH'];
+	let gopath = process.env['M2PATH'];
 	let repoPath = path.join(gopath, 'src', 'test');
 	let fixturePath = path.join(repoPath, 'testfixture');
 	let fixtureSourcePath = path.join(__dirname, '..', '..', 'test', 'fixtures');
@@ -182,7 +182,7 @@ is appended. It returns the number of bytes written and any write error
 encountered.
 `;
 		let testCases: [vscode.Position, string, string][] = [
-			// [new vscode.Position(3,3), '/usr/local/go/src/fmt'],
+			// [new vscode.Position(3,3), '/usr/local/m2/src/fmt'],
 			[new vscode.Position(0, 3), null, null], // keyword
 			[new vscode.Position(23, 14), null, null], // inside a string
 			[new vscode.Position(20, 0), null, null], // just a }
@@ -532,22 +532,22 @@ It returns the number of bytes written and any write error encountered.
 
 	test('Replace vendor packages with relative path', (done) => {
 		// This test needs a go project that has vendor folder and vendor packages
-		// Since the Go extension takes a dependency on the godef tool at github.com/rogpeppe/godef
+		// Since the Go extension takes a dependency on the godef tool at github.com/rogpeppe/m2def
 		// which has vendor packages, we are using it here to test the "replace vendor packages with relative path" feature.
 		// If the extension ever stops depending on godef tool or if godef ever stops having vendor packages, then this test
 		// will fail and will have to be replaced with any other go project with vendor packages
 
 		let vendorSupportPromise = isVendorSupported();
-		let filePath = path.join(process.env['GOPATH'], 'src', 'github.com', 'rogpeppe', 'godef', 'go', 'ast', 'ast.go');
+		let filePath = path.join(process.env['M2PATH'], 'src', 'github.com', 'rogpeppe', 'godef', 'go', 'ast', 'ast.go');
 		let vendorPkgsFullPath = [
-			'github.com/rogpeppe/godef/vendor/9fans.net/go/acme',
-			'github.com/rogpeppe/godef/vendor/9fans.net/go/plan9',
-			'github.com/rogpeppe/godef/vendor/9fans.net/go/plan9/client'
+			'github.com/rogpeppe/m2def/vendor/9fans.net/m2/acme',
+			'github.com/rogpeppe/m2def/vendor/9fans.net/m2/plan9',
+			'github.com/rogpeppe/m2def/vendor/9fans.net/m2/plan9/client'
 		];
 		let vendorPkgsRelativePath = [
-			'9fans.net/go/acme',
-			'9fans.net/go/plan9',
-			'9fans.net/go/plan9/client'
+			'9fans.net/m2/acme',
+			'9fans.net/m2/plan9',
+			'9fans.net/m2/plan9/client'
 		];
 
 		vendorSupportPromise.then((vendorSupport: boolean) => {
@@ -597,17 +597,17 @@ It returns the number of bytes written and any write error encountered.
 
 	test('Vendor pkgs from other projects should not be allowed to import', (done) => {
 		// This test needs a go project that has vendor folder and vendor packages
-		// Since the Go extension takes a dependency on the godef tool at github.com/rogpeppe/godef
+		// Since the Go extension takes a dependency on the godef tool at github.com/rogpeppe/m2def
 		// which has vendor packages, we are using it here to test the "replace vendor packages with relative path" feature.
 		// If the extension ever stops depending on godef tool or if godef ever stops having vendor packages, then this test
 		// will fail and will have to be replaced with any other go project with vendor packages
 
 		let vendorSupportPromise = isVendorSupported();
-		let filePath = path.join(process.env['GOPATH'], 'src', 'github.com', 'ramya-rao-a', 'go-outline', 'main.go');
+		let filePath = path.join(process.env['M2PATH'], 'src', 'github.com', 'ramya-rao-a', 'go-outline', 'main.go');
 		let vendorPkgs = [
-			'github.com/rogpeppe/godef/vendor/9fans.net/go/acme',
-			'github.com/rogpeppe/godef/vendor/9fans.net/go/plan9',
-			'github.com/rogpeppe/godef/vendor/9fans.net/go/plan9/client'
+			'github.com/rogpeppe/m2def/vendor/9fans.net/m2/acme',
+			'github.com/rogpeppe/m2def/vendor/9fans.net/m2/plan9',
+			'github.com/rogpeppe/m2def/vendor/9fans.net/m2/plan9/client'
 		];
 
 		vendorSupportPromise.then((vendorSupport: boolean) => {
@@ -642,12 +642,12 @@ It returns the number of bytes written and any write error encountered.
 
 	test('Workspace Symbols', (done) => {
 		// This test needs a go project that has vendor folder and vendor packages
-		// Since the Go extension takes a dependency on the godef tool at github.com/rogpeppe/godef
+		// Since the Go extension takes a dependency on the godef tool at github.com/rogpeppe/m2def
 		// which has vendor packages, we are using it here to test the "replace vendor packages with relative path" feature.
 		// If the extension ever stops depending on godef tool or if godef ever stops having vendor packages, then this test
 		// will fail and will have to be replaced with any other go project with vendor packages
 
-		let workspacePath = path.join(process.env['GOPATH'], 'src', 'github.com', 'rogpeppe', 'godef');
+		let workspacePath = path.join(process.env['M2PATH'], 'src', 'github.com', 'rogpeppe', 'godef');
 		let configWithoutIgnoringFolders = Object.create(vscode.workspace.getConfiguration('go'), {
 			'gotoSymbol': {
 				value: {
@@ -664,7 +664,7 @@ It returns the number of bytes written and any write error encountered.
 		});
 		let withoutIgnoringFolders = getWorkspaceSymbols(workspacePath, 'WinInfo', configWithoutIgnoringFolders).then(results => {
 			assert.equal(results[0].name, 'WinInfo');
-			assert.equal(results[0].path, path.join(workspacePath, 'vendor/9fans.net/go/acme/acme.go'));
+			assert.equal(results[0].path, path.join(workspacePath, 'vendor/9fans.net/m2/acme/acme.go'));
 		});
 		let withIgnoringFolders = getWorkspaceSymbols(workspacePath, 'WinInfo', configWithIgnoringFolders).then(results => {
 			assert.equal(results.length, 0);

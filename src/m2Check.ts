@@ -241,7 +241,7 @@ export function check(filename: string, goConfig: vscode.WorkspaceConfiguration)
 			if (goConfig['toolsGopath']) {
 				// gometalinter will expect its linters to be in the GOPATH
 				// So add the toolsGopath to GOPATH
-				lintEnv['GOPATH'] += path.delimiter + goConfig['toolsGopath'];
+				lintEnv['M2PATH'] += path.delimiter + goConfig['toolsGopath'];
 			}
 		}
 

@@ -61,20 +61,20 @@ export function getBinPathWithPreferredGopath(binname: string, ...preferredGopat
 
 function correctBinname(binname: string) {
 	if (process.platform === 'win32')
-		return binname + '.exe';
+		return binname + '_windows.exe';
 	else
-		return binname;
+		return binname + '_linux';
 }
 
 /**
- * Returns Go runtime binary path.
+ * Returns Monkey2 binary path.
  *
- * @return the path to the Go binary.
+ * @return the path to the mx2cc binary.
  */
-export function getGoRuntimePath(): string {
+export function getMonkey2RuntimePath(): string {
 	if (runtimePathCache) return runtimePathCache;
-	let correctBinNameGo = correctBinname('go');
-	if (process.env['GOROOT']) {
+	let correctBinNameGo = correctBinname('mx2cc');
+	if (process.env['M2ROOT']) {
 		let runtimePathFromGoRoot = path.join(process.env['GOROOT'], 'bin', correctBinNameGo);
 		if (fileExists(runtimePathFromGoRoot)) {
 			runtimePathCache = runtimePathFromGoRoot;
@@ -165,8 +165,8 @@ export function getInferredGopath(folderPath: string): string {
  * @param gopath string Current Gopath. Can be ; or : separated (as per os) to support multiple paths
  * @param currentFileDirPath string
  */
-export function getCurrentGoWorkspaceFromGOPATH(gopath: string, currentFileDirPath: string): string {
-	let workspaces: string[] = gopath.split(path.delimiter);
+export function getCurrentWorkspaceFromM2PATH(m2path: string, currentFileDirPath: string): string {
+	let workspaces: string[] = m2path.split(path.delimiter);
 	let currentWorkspace = '';
 
 	// Workaround for issue in https://github.com/Microsoft/vscode/issues/9448#issuecomment-244804026
@@ -175,11 +175,11 @@ export function getCurrentGoWorkspaceFromGOPATH(gopath: string, currentFileDirPa
 	}
 
 	// Find current workspace by checking if current file is
-	// under any of the workspaces in $GOPATH
+	// under any of the workspaces in $M2PATH
 	for (let i = 0; i < workspaces.length; i++) {
 		let possibleCurrentWorkspace = path.join(workspaces[i], 'src');
 		if (currentFileDirPath.startsWith(possibleCurrentWorkspace)) {
-			// In case of nested workspaces, (example: both /Users/me and /Users/me/src/a/b/c are in $GOPATH)
+			// In case of nested workspaces, (example: both /Users/me and /Users/me/src/a/b/c are in $M2PATH)
 			// both parent & child workspace in the nested workspaces pair can make it inside the above if block
 			// Therefore, the below check will take longer (more specific to current file) of the two
 			if (possibleCurrentWorkspace.length > currentWorkspace.length) {

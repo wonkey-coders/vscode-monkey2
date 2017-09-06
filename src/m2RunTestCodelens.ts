@@ -19,7 +19,7 @@ export class GoRunTestCodeLensProvider implements CodeLensProvider {
 				'request': 'launch',
 				'mode': 'test',
 				'env': {
-					'GOPATH': getCurrentGoPath() // Passing current GOPATH to Delve as it runs in another process
+					'M2PATH': getCurrentGoPath() // Passing current GOPATH to Delve as it runs in another process
 				}
 			};
 

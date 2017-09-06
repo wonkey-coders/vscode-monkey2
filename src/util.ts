@@ -10,9 +10,9 @@ import cp = require('child_process');
 import TelemetryReporter from 'vscode-extension-telemetry';
 import fs = require('fs');
 
-const extensionId: string = 'lukehoban.Go';
+const extensionId: string = 'nitrologic.Monkey2';
 const extensionVersion: string = vscode.extensions.getExtension(extensionId).packageJSON.version;
-const aiKey: string = 'AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217';
+const aiKey: string = 'AIF-56fe259a-f869-438a-9eff-928c454c1ec4';
 
 export const goKeywords: string[] = [
 	'break',
@@ -286,7 +286,7 @@ export function getCurrentGoPath(): string {
 		inferredGopath = getInferredGopath(vscode.workspace.rootPath);
 	}
 
-	return inferredGopath ? inferredGopath : (configGopath ? resolvePath(configGopath, vscode.workspace.rootPath) : process.env['GOPATH']);
+	return inferredGopath ? inferredGopath : (configGopath ? resolvePath(configGopath, vscode.workspace.rootPath) : process.env['M2PATH']);
 }
 
 export function getExtensionCommands(): any[] {
