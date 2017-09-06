@@ -10,7 +10,7 @@ import cp = require('child_process');
 import path = require('path');
 import os = require('os');
 import fs = require('fs');
-import { getGoRuntimePath, resolvePath, getCurrentGoWorkspaceFromGOPATH } from './m2Path';
+import { getMonkey2RuntimePath, resolvePath, getCurrentWorkspaceFromM2PATH } from './m2Path';
 import { getCoverage } from './m2Cover';
 import { outputChannel } from './m2Status';
 import { promptForMissingTool } from './m2InstallTools';
@@ -46,15 +46,15 @@ export interface ICheckResult {
  * @param printUnexpectedOutput If true, then output that doesnt match expected format is printed to the output channel
  */
 function runTool(args: string[], cwd: string, severity: string, useStdErr: boolean, toolName: string, env: any, printUnexpectedOutput?: boolean): Promise<ICheckResult[]> {
-	let goRuntimePath = getGoRuntimePath();
-	let cmd = toolName ? getBinPath(toolName) : goRuntimePath;
+	let m2RuntimePath = getMonkey2RuntimePath();
+	let cmd = toolName ? getBinPath(toolName) : m2RuntimePath;
 	return new Promise((resolve, reject) => {
 		cp.execFile(cmd, args, { env: env, cwd: cwd }, (err, stdout, stderr) => {
 			try {
 				if (err && (<any>err).code === 'ENOENT') {
 					// Since the tool is run on save which can be frequent
 					// we avoid sending explicit notification if tool is missing
-					console.log(`Cannot find ${toolName ? toolName : goRuntimePath}`);
+					console.log(`Cannot find ${toolName ? toolName : m2RuntimePath}`);
 					return resolve([]);
 				}
 				if (err && stderr && !useStdErr) {
@@ -118,10 +118,10 @@ export function check(filename: string, goConfig: vscode.WorkspaceConfiguration)
 	let runningToolsPromises = [];
 	let cwd = path.dirname(filename);
 	let env = getToolsEnvVars();
-	let goRuntimePath = getGoRuntimePath();
+	let m2RuntimePath = getMonkey2RuntimePath();
 
-	if (!goRuntimePath) {
-		vscode.window.showInformationMessage('Cannot find "go" binary. Update PATH or GOROOT appropriately');
+	if (!m2RuntimePath) {
+		vscode.window.showInformationMessage('Cannot find "mx2cc" binary. Update PATH or M2ROOT appropriately');
 		return Promise.resolve([]);
 	}
 
@@ -185,7 +185,7 @@ export function check(filename: string, goConfig: vscode.WorkspaceConfiguration)
 			runningToolsPromises.push(outerBuildPromise);
 		} else {
 			// Find the right importPath instead of directly using `.`. Fixes https://github.com/Microsoft/vscode-go/issues/846
-			let currentGoWorkspace = getCurrentGoWorkspaceFromGOPATH(getCurrentGoPath(), cwd);
+			let currentGoWorkspace = getCurrentWorkspaceFromM2PATH(getCurrentGoPath(), cwd);
 			let importPath = currentGoWorkspace ? cwd.substr(currentGoWorkspace.length + 1) : '.';
 
 			runningToolsPromises.push(runTool(

@@ -12,7 +12,7 @@ import { documentSymbols } from './m2Outline';
 import { promptForMissingTool } from './m2InstallTools';
 import path = require('path');
 import { getRelativePackagePath } from './m2Packages';
-import { getCurrentGoWorkspaceFromGOPATH } from './m2Path';
+import { getCurrentWorkspaceFromM2PATH } from './m2Path';
 
 const missingToolMsg = 'Missing tool: ';
 
@@ -48,7 +48,7 @@ export function listPackages(excludeImportedPkgs: boolean = false): Thenable<str
 			}
 
 			let currentFileDirPath = path.dirname(vscode.window.activeTextEditor.document.fileName);
-			let currentWorkspace = getCurrentGoWorkspaceFromGOPATH(getCurrentGoPath(), currentFileDirPath);
+			let currentWorkspace = getCurrentWorkspaceFromM2PATH(getCurrentGoPath(), currentFileDirPath);
 			let pkgSet = new Set<string>();
 			pkgs.forEach(pkg => {
 				if (!pkg || importedPkgs.indexOf(pkg) > -1) {

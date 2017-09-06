@@ -131,9 +131,9 @@ export function promptForUpdatingTool(tool: string) {
  */
 function installTools(goVersion: SemVersion, missing?: string[]) {
 	let tools = getTools(goVersion);
-	let goRuntimePath = getGoRuntimePath();
-	if (!goRuntimePath) {
-		vscode.window.showInformationMessage('Cannot find "go" binary. Update PATH or GOROOT appropriately');
+	let m2RuntimePath = getMonkey2RuntimePath();
+	if (!m2RuntimePath) {
+		vscode.window.showInformationMessage('Cannot find ",mx2cc" binary. Update PATH or M2ROOT appropriately');
 		return;
 	}
 	if (!missing) {
@@ -179,7 +179,7 @@ function installTools(goVersion: SemVersion, missing?: string[]) {
 
 	missing.reduce((res: Promise<string[]>, tool: string) => {
 		return res.then(sofar => new Promise<string[]>((resolve, reject) => {
-			cp.execFile(monkey2RuntimePath, ['get', '-u', '-v', tools[tool]], { env: envForTools }, (err, stdout, stderr) => {
+			cp.execFile(m2RuntimePath, ['get', '-u', '-v', tools[tool]], { env: envForTools }, (err, stdout, stderr) => {
 				if (err) {
 					outputChannel.appendLine('Installing ' + tools[tool] + ' FAILED');
 					let failureReason = tool + ';;' + err + stdout.toString() + stderr.toString();
@@ -236,9 +236,9 @@ export function updateGoPathGoRootFromConfig(): Promise<void> {
 	}
 
 	// If GOPATH is still not set, then use the one from `go env`
-	let goRuntimePath = getGoRuntimePath();
+	let m2RuntimePath = getMonkey2RuntimePath();
 	return new Promise<void>((resolve, reject) => {
-		cp.execFile(goRuntimePath, ['env', 'M2PATH'], (err, stdout, stderr) => {
+		cp.execFile(m2RuntimePath, ['env', 'M2PATH'], (err, stdout, stderr) => {
 			if (err) {
 				return reject();
 			}

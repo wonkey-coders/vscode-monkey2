@@ -239,7 +239,7 @@ class Delve {
 			if (!!launchArgs.noDebug) {
 				if (mode === 'debug' && !isProgramDirectory) {
 					this.noDebug = true;
-					this.debugProcess = spawn(getGoRuntimePath(), ['run', program], { env });
+					this.debugProcess = spawn(getMonkey2RuntimePath(), ['run', program], { env });
 					this.debugProcess.stderr.on('data', chunk => {
 						let str = chunk.toString();
 						if (this.onstderr) { this.onstderr(str); }

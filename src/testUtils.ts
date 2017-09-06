@@ -7,7 +7,7 @@ import cp = require('child_process');
 import path = require('path');
 import vscode = require('vscode');
 import util = require('util');
-import { parseEnvFile, getGoRuntimePath, resolvePath } from './m2Path';
+import { parseEnvFile, getMonkey2RuntimePath, resolvePath } from './m2Path';
 import { getToolsEnvVars, LineBuffer } from './util';
 import { GoDocumentSymbolProvider } from './m2Outline';
 import { getNonVendorPackages } from './m2Packages';
@@ -117,10 +117,10 @@ export function goTest(testconfig: TestConfig): Thenable<boolean> {
 			args.push(buildTags);
 		}
 		let testEnvVars = getTestEnvVars(testconfig.goConfig);
-		let goRuntimePath = getGoRuntimePath();
+		let m2RuntimePath = getMonkey2RuntimePath();
 
-		if (!goRuntimePath) {
-			vscode.window.showInformationMessage('Cannot find "go" binary. Update PATH or GOROOT appropriately');
+		if (!m2RuntimePath) {
+			vscode.window.showInformationMessage('Cannot find "mxc22" binary. Update PATH or M2ROOT appropriately');
 			return Promise.resolve();
 		}
 
@@ -131,12 +131,12 @@ export function goTest(testconfig: TestConfig): Thenable<boolean> {
 			} else {
 				outTargets.push(...targets);
 			}
-			outputChannel.appendLine(['Running tool:', goRuntimePath, ...outTargets].join(' '));
+			outputChannel.appendLine(['Running tool:', m2RuntimePath, ...outTargets].join(' '));
 			outputChannel.appendLine('');
 
 			args.push(...targets);
 
-			let proc = cp.spawn(goRuntimePath, args, { env: testEnvVars, cwd: testconfig.dir });
+			let proc = cp.spawn(m2RuntimePath, args, { env: testEnvVars, cwd: testconfig.dir });
 			const outBuf = new LineBuffer();
 			const errBuf = new LineBuffer();
 

@@ -1,7 +1,7 @@
 import vscode = require('vscode');
 import cp = require('child_process');
 import path = require('path');
-import { getGoRuntimePath, getCurrentGoWorkspaceFromGOPATH } from './m2Path';
+import { getMonkey2RuntimePath, getCurrentWorkspaceFromM2PATH } from './m2Path';
 import { isVendorSupported, getCurrentGoPath, getToolsEnvVars } from './util';
 
 let allPkgs = new Map<string, string>();
@@ -17,10 +17,10 @@ export function isGoListComplete(): boolean {
  * @returns Map<string, string> mapping between package import path and package name
  */
 export function goListAll(): Promise<Map<string, string>> {
-	let goRuntimePath = getGoRuntimePath();
+	let m2RuntimePath = getMonkey2RuntimePath();
 
-	if (!goRuntimePath) {
-		vscode.window.showInformationMessage('Cannot find "go" binary. Update PATH or GOROOT appropriately');
+	if (!m2RuntimePath) {
+		vscode.window.showInformationMessage('Cannot find "mx2cc" binary. Update PATH or M2ROOT appropriately');
 		return Promise.resolve(null);
 	}
 
@@ -32,7 +32,7 @@ export function goListAll(): Promise<Map<string, string>> {
 		// Use `{env: {}}` to make the execution faster. Include GOPATH to account if custom work space exists.
 		const env: any = getToolsEnvVars();
 
-		const cmd = cp.spawn(goRuntimePath, ['list', '-f', '{{.Name}};{{.ImportPath}}', 'all'], { env: env });
+		const cmd = cp.spawn(m2RuntimePath, ['list', '-f', '{{.Name}};{{.ImportPath}}', 'all'], { env: env });
 		const chunks = [];
 		cmd.stdout.on('data', (d) => {
 			chunks.push(d);
@@ -62,7 +62,7 @@ export function getImportablePackages(filePath: string): Promise<Map<string, str
 	return Promise.all([isVendorSupported(), goListAll()]).then(values => {
 		let isVendorSupported = values[0];
 		let currentFileDirPath = path.dirname(filePath);
-		let currentWorkspace = getCurrentGoWorkspaceFromGOPATH(getCurrentGoPath(), currentFileDirPath);
+		let currentWorkspace = getCurrentWorkspaceFromM2PATH(getCurrentGoPath(), currentFileDirPath);
 		let pkgMap = new Map<string, string>();
 
 		allPkgs.forEach((pkgName, pkgPath) => {
@@ -116,14 +116,14 @@ export function getRelativePackagePath(currentFileDirPath: string, currentWorksp
  * Returns import paths for all non vendor packages under given folder
  */
 export function getNonVendorPackages(folderPath: string): Promise<string[]> {
-	let goRuntimePath = getGoRuntimePath();
+	let m2RuntimePath = getMonkey2RuntimePath();
 
-	if (!goRuntimePath) {
+	if (!m2RuntimePath) {
 		vscode.window.showInformationMessage('Cannot find "go" binary. Update PATH or GOROOT appropriately');
 		return Promise.resolve(null);
 	}
 	return new Promise<string[]>((resolve, reject) => {
-		const childProcess = cp.spawn(goRuntimePath, ['list', './...'], { cwd: folderPath, env: getToolsEnvVars() });
+		const childProcess = cp.spawn(m2RuntimePath, ['list', './...'], { cwd: folderPath, env: getToolsEnvVars() });
 		const chunks = [];
 		childProcess.stdout.on('data', (stdout) => {
 			chunks.push(stdout);

@@ -7,7 +7,7 @@
 
 import vscode = require('vscode');
 import cp = require('child_process');
-import { getGoRuntimePath } from './m2Path';
+import { getMonkey2RuntimePath } from './m2Path';
 import path = require('path');
 import { goListAll, isGoListComplete } from './m2Packages';
 
@@ -30,16 +30,16 @@ export function browsePackages() {
 }
 
 function showPackageFiles(pkg: string, showAllPkgsIfPkgNotFound: boolean)  {
-	const goRuntimePath = getGoRuntimePath();
-	if (!goRuntimePath) {
-		return vscode.window.showErrorMessage('Could not locate Go path. Make sure you have Go installed');
+	const m2RuntimePath = getMonkey2RuntimePath();
+	if (!m2RuntimePath) {
+		return vscode.window.showErrorMessage('Could not locate Monkey2 path. Make sure you have Monkey2 installed');
 	}
 
 	if (!pkg && showAllPkgsIfPkgNotFound) {
 		return showPackageList();
 	}
 
-	cp.execFile(goRuntimePath, ['list', '-f', '{{.Dir}}:{{.GoFiles}}:{{.TestGoFiles}}:{{.XTestGoFiles}}', pkg], (err, stdout, stderr) => {
+	cp.execFile(m2RuntimePath, ['list', '-f', '{{.Dir}}:{{.GoFiles}}:{{.TestGoFiles}}:{{.XTestGoFiles}}', pkg], (err, stdout, stderr) => {
 		if (!stdout || stdout.indexOf(':') === -1) {
 			if (showAllPkgsIfPkgNotFound) {
 				return showPackageList();

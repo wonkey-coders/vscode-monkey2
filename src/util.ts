@@ -5,7 +5,7 @@
 
 import vscode = require('vscode');
 import path = require('path');
-import { getGoRuntimePath, getBinPathWithPreferredGopath, resolvePath, getInferredGopath } from './m2Path';
+import { getMonkey2RuntimePath, getBinPathWithPreferredGopath, resolvePath, getInferredGopath } from './m2Path';
 import cp = require('child_process');
 import TelemetryReporter from 'vscode-extension-telemetry';
 import fs = require('fs');
@@ -152,10 +152,10 @@ export function canonicalizeGOPATHPrefix(filename: string): string {
  * Returns null if go is being used from source/tip in which case `go version` will not return release tag like go1.6.3
  */
 export function getGoVersion(): Promise<SemVersion> {
-	let goRuntimePath = getGoRuntimePath();
+	let m2RuntimePath = getMonkey2RuntimePath();
 
-	if (!goRuntimePath) {
-		vscode.window.showInformationMessage('Cannot find "go" binary. Update PATH or GOROOT appropriately');
+	if (!m2RuntimePath) {
+		vscode.window.showInformationMessage('Cannot find "mx2cc" binary. Update PATH or GOROOT appropriately');
 		return Promise.resolve(null);
 	}
 
@@ -164,7 +164,7 @@ export function getGoVersion(): Promise<SemVersion> {
 		return Promise.resolve(goVersion);
 	}
 	return new Promise<SemVersion>((resolve, reject) => {
-		cp.execFile(goRuntimePath, ['version'], {}, (err, stdout, stderr) => {
+		cp.execFile(m2RuntimePath, ['version'], {}, (err, stdout, stderr) => {
 			let matches = /go version go(\d).(\d).*/.exec(stdout);
 			if (matches) {
 				goVersion = {

@@ -9,7 +9,7 @@ import cp = require('child_process');
 import path = require('path');
 import os = require('os');
 import fs = require('fs');
-import { getGoRuntimePath } from './m2Path';
+import { getMonkey2RuntimePath } from './m2Path';
 import { showTestOutput, goTest } from './testUtils';
 import { getBinPath } from './util';
 import rl = require('readline');
