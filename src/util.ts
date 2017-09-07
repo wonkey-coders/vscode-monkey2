@@ -10,8 +10,9 @@ import cp = require('child_process');
 import TelemetryReporter from 'vscode-extension-telemetry';
 import fs = require('fs');
 
-const extensionId: string = 'nitrologic.Monkey2';
-const extensionVersion: string = "0.0.1";//vscode.extensions.getExtension(extensionId).packageJSON.version;
+const extensionId: string = 'nitrologic.monkey2';
+//const extensionVersion: string = "0.0.1";//
+const extensionVersion: string = vscode.extensions.getExtension(extensionId).packageJSON.version;
 const aiKey: string = 'AIF-56fe259a-f869-438a-9eff-928c454c1ec4';
 
 export const goKeywords: string[] = [
