@@ -5,13 +5,13 @@
 
 import vscode = require('vscode');
 import path = require('path');
-import { getMonkey2RuntimePath, getBinPathWithPreferredGopath, resolvePath, getInferredGopath } from './m2Path';
+import { getMonkey2RuntimePath, getBinPathWithPreferredMonkey2path, resolvePath, getInferredGopath } from './m2Path';
 import cp = require('child_process');
 import TelemetryReporter from 'vscode-extension-telemetry';
 import fs = require('fs');
 
 const extensionId: string = 'nitrologic.Monkey2';
-const extensionVersion: string = vscode.extensions.getExtension(extensionId).packageJSON.version;
+const extensionVersion: string = "0.0.1";//vscode.extensions.getExtension(extensionId).packageJSON.version;
 const aiKey: string = 'AIF-56fe259a-f869-438a-9eff-928c454c1ec4';
 
 export const goKeywords: string[] = [
@@ -125,7 +125,7 @@ export function parameters(signature: string): string[] {
 }
 
 export function canonicalizeGOPATHPrefix(filename: string): string {
-	let gopath: string = getCurrentGoPath();
+	let gopath: string = getCurrentMonkey2Path();
 	if (!gopath) return filename;
 	let workspaces = gopath.split(path.delimiter);
 	let filenameLowercase = filename.toLowerCase();
@@ -212,7 +212,7 @@ export function isVendorSupported(): Promise<boolean> {
  * If not set, then prompts user to do set GOPATH
  */
 export function isGoPathSet(): boolean {
-	if (!getCurrentGoPath()) {
+	if (!getCurrentMonkey2Path()) {
 		vscode.window.showInformationMessage('Set GOPATH environment variable and restart VS Code or set GOPATH in Workspace settings', 'Set GOPATH in Workspace Settings').then(selected => {
 			if (selected === 'Set GOPATH in Workspace Settings') {
 				let settingsFilePath = path.join(vscode.workspace.rootPath, '.vscode', 'settings.json');
@@ -258,7 +258,7 @@ export function getToolsGopath(): string {
 }
 
 export function getBinPath(tool: string): string {
-	return getBinPathWithPreferredGopath(tool, getToolsGopath(), getCurrentGoPath());
+	return getBinPathWithPreferredMonkey2path(tool, getToolsGopath(), getCurrentMonkey2Path());
 }
 
 export function getFileArchive(document: vscode.TextDocument): string {
@@ -269,7 +269,7 @@ export function getFileArchive(document: vscode.TextDocument): string {
 export function getToolsEnvVars(): any {
 	let toolsEnvVars = vscode.workspace.getConfiguration('go')['toolsEnvVars'];
 
-	let gopath = getCurrentGoPath();
+	let gopath = getCurrentMonkey2Path();
 
 	let envVars = Object.assign({}, process.env, gopath ? { GOPATH: gopath } : {});
 
@@ -279,14 +279,14 @@ export function getToolsEnvVars(): any {
 	return Object.assign(envVars, toolsEnvVars);
 }
 
-export function getCurrentGoPath(): string {
-	let configGopath = vscode.workspace.getConfiguration('go')['gopath'];
-	let inferredGopath;
-	if (vscode.workspace.getConfiguration('go')['inferGopath'] === true) {
-		inferredGopath = getInferredGopath(vscode.workspace.rootPath);
+export function getCurrentMonkey2Path(): string {
+	let configGopath = vscode.workspace.getConfiguration('monkey2')['monkey2path'];
+	let inferredMonkey2path;
+	if (vscode.workspace.getConfiguration('monkey2')['inferMonkey2path'] === true) {
+		inferredMonkey2path = getInferredGopath(vscode.workspace.rootPath);
 	}
 
-	return inferredGopath ? inferredGopath : (configGopath ? resolvePath(configGopath, vscode.workspace.rootPath) : process.env['M2PATH']);
+	return inferredMonkey2path ? inferredMonkey2path : (configGopath ? resolvePath(configGopath, vscode.workspace.rootPath) : process.env['M2PATH']);
 }
 
 export function getExtensionCommands(): any[] {

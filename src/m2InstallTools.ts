@@ -13,7 +13,7 @@ import cp = require('child_process');
 import { showGoStatus, hideGoStatus } from './m2Status';
 import { getMonkey2RuntimePath, resolvePath } from './m2Path';
 import { outputChannel } from './m2Status';
-import { getBinPath, getToolsGopath, getGoVersion, SemVersion, isVendorSupported, getCurrentGoPath } from './util';
+import { getBinPath, getToolsGopath, getGoVersion, SemVersion, isVendorSupported, getCurrentMonkey2Path } from './util';
 import { goLiveErrorsEnabled } from './m2LiveErrors';
 
 let updatesDeclinedTools: string[] = [];
@@ -154,7 +154,7 @@ function installTools(goVersion: SemVersion, missing?: string[]) {
 
 	// If the go.toolsGopath is set, use its value as the GOPATH for the "go get" child process.
 	// Else use the Current Gopath
-	let toolsGopath = getToolsGopath() || getCurrentGoPath();
+	let toolsGopath = getToolsGopath() || getCurrentMonkey2Path();
 	if (toolsGopath) {
 		envForTools['M2PATH'] = toolsGopath;
 	} else {

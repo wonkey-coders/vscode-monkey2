@@ -30,7 +30,7 @@ export function getBinPathFromEnvVar(toolName: string, envVarValue: string, appe
 	return null;
 }
 
-export function getBinPathWithPreferredGopath(binname: string, ...preferredGopaths) {
+export function getBinPathWithPreferredMonkey2path(binname: string, ...preferredGopaths) {
 	if (binPathCache[correctBinname(binname)]) return binPathCache[correctBinname(binname)];
 
 	for (let i = 0; i < preferredGopaths.length; i++) {

@@ -2,7 +2,7 @@ import vscode = require('vscode');
 import cp = require('child_process');
 import path = require('path');
 import { getMonkey2RuntimePath, getCurrentWorkspaceFromM2PATH } from './m2Path';
-import { isVendorSupported, getCurrentGoPath, getToolsEnvVars } from './util';
+import { isVendorSupported, getCurrentMonkey2Path, getToolsEnvVars } from './util';
 
 let allPkgs = new Map<string, string>();
 let goListAllCompleted: boolean = false;
@@ -62,7 +62,7 @@ export function getImportablePackages(filePath: string): Promise<Map<string, str
 	return Promise.all([isVendorSupported(), goListAll()]).then(values => {
 		let isVendorSupported = values[0];
 		let currentFileDirPath = path.dirname(filePath);
-		let currentWorkspace = getCurrentWorkspaceFromM2PATH(getCurrentGoPath(), currentFileDirPath);
+		let currentWorkspace = getCurrentWorkspaceFromM2PATH(getCurrentMonkey2Path(), currentFileDirPath);
 		let pkgMap = new Map<string, string>();
 
 		allPkgs.forEach((pkgName, pkgPath) => {

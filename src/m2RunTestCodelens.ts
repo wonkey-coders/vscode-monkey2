@@ -10,7 +10,7 @@ import path = require('path');
 import { CodeLensProvider, TextDocument, CancellationToken, CodeLens, Command } from 'vscode';
 import { getTestFunctions, getTestEnvVars, getTestFlags } from './testUtils';
 import { GoDocumentSymbolProvider } from './m2Outline';
-import { getCurrentGoPath } from './util';
+import { getCurrentMonkey2Path } from './util';
 
 export class GoRunTestCodeLensProvider implements CodeLensProvider {
 	private readonly debugConfig: any = {
@@ -19,7 +19,7 @@ export class GoRunTestCodeLensProvider implements CodeLensProvider {
 				'request': 'launch',
 				'mode': 'test',
 				'env': {
-					'M2PATH': getCurrentGoPath() // Passing current GOPATH to Delve as it runs in another process
+					'M2PATH': getCurrentMonkey2Path() // Passing current GOPATH to Delve as it runs in another process
 				}
 			};
 

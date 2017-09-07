@@ -15,7 +15,7 @@ import { getCoverage } from './m2Cover';
 import { outputChannel } from './m2Status';
 import { promptForMissingTool } from './m2InstallTools';
 import { goTest } from './testUtils';
-import { getBinPath, parseFilePrelude, getCurrentGoPath, getToolsEnvVars } from './util';
+import { getBinPath, parseFilePrelude, getCurrentMonkey2Path, getToolsEnvVars } from './util';
 import { getNonVendorPackages } from './m2Packages';
 
 let statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
@@ -185,7 +185,7 @@ export function check(filename: string, goConfig: vscode.WorkspaceConfiguration)
 			runningToolsPromises.push(outerBuildPromise);
 		} else {
 			// Find the right importPath instead of directly using `.`. Fixes https://github.com/Microsoft/vscode-go/issues/846
-			let currentGoWorkspace = getCurrentWorkspaceFromM2PATH(getCurrentGoPath(), cwd);
+			let currentGoWorkspace = getCurrentWorkspaceFromM2PATH(getCurrentMonkey2Path(), cwd);
 			let importPath = currentGoWorkspace ? cwd.substr(currentGoWorkspace.length + 1) : '.';
 
 			runningToolsPromises.push(runTool(

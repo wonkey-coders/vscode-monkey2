@@ -11,7 +11,7 @@ import { readFileSync, existsSync, lstatSync } from 'fs';
 import { basename, dirname, extname } from 'path';
 import { spawn, ChildProcess, execSync, spawnSync } from 'child_process';
 import { Client, RPCConnection } from 'json-rpc2';
-import { parseEnvFile, getBinPathWithPreferredGopath, resolvePath, stripBOM, getMonkey2RuntimePath, getInferredGopath, getCurrentWorkspaceFromM2PATH } from '../m2Path';
+import { parseEnvFile, getBinPathWithPreferredMonkey2path, resolvePath, stripBOM, getMonkey2RuntimePath, getInferredGopath, getCurrentWorkspaceFromM2PATH } from '../m2Path';
 import * as logger from 'vscode-debug-logger';
 import * as FS from 'fs';
 
@@ -269,7 +269,7 @@ class Delve {
 				return;
 			}
 
-			let dlv = getBinPathWithPreferredGopath('dlv', resolvePath(env['M2PATH']), process.env['M2PATH']);
+			let dlv = getBinPathWithPreferredMonkey2path('dlv', resolvePath(env['M2PATH']), process.env['M2PATH']);
 
 			if (!existsSync(dlv)) {
 				verbose(`Couldnt find dlv at ${process.env['M2PATH']}${env['M2PATH'] ? ', ' + env['M2PATH'] : ''} or ${process.env['PATH']}`);

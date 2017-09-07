@@ -7,7 +7,7 @@
 
 import vscode = require('vscode');
 import cp = require('child_process');
-import { parseFilePrelude, isVendorSupported, getBinPath, getCurrentGoPath, getToolsEnvVars } from './util';
+import { parseFilePrelude, isVendorSupported, getBinPath, getCurrentMonkey2Path, getToolsEnvVars } from './util';
 import { documentSymbols } from './m2Outline';
 import { promptForMissingTool } from './m2InstallTools';
 import path = require('path');
@@ -48,7 +48,7 @@ export function listPackages(excludeImportedPkgs: boolean = false): Thenable<str
 			}
 
 			let currentFileDirPath = path.dirname(vscode.window.activeTextEditor.document.fileName);
-			let currentWorkspace = getCurrentWorkspaceFromM2PATH(getCurrentGoPath(), currentFileDirPath);
+			let currentWorkspace = getCurrentWorkspaceFromM2PATH(getCurrentMonkey2Path(), currentFileDirPath);
 			let pkgSet = new Set<string>();
 			pkgs.forEach(pkg => {
 				if (!pkg || importedPkgs.indexOf(pkg) > -1) {

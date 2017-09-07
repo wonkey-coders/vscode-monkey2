@@ -17,7 +17,7 @@
 			"name": "Launch as server",
 			"type": "node2",
 			"request": "launch",
-			"program": "${workspaceRoot}/out/src/debugAdapter/goDebug.js",
+			"program": "${workspaceRoot}/out/src/debugAdapter/monkey2Debug.js",
 			"args": [ "--server=4712" ],
 			"sourceMaps": true,
 			"outFiles": ["${workspaceRoot}/out/**/*.js"]
@@ -27,8 +27,8 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
-			// the workspace path should be GOPATH
-			"args": ["--extensionDevelopmentPath=${workspaceRoot}", "--extensionTestsPath=${workspaceRoot}/out/test", "env.GOPATH" ],
+			// the workspace path should be M2PATH
+			"args": ["--extensionDevelopmentPath=${workspaceRoot}", "--extensionTestsPath=${workspaceRoot}/out/test", "env.M2PATH" ],
 			"stopOnEntry": false,
 			"sourceMaps": true,
 			"outFiles": ["${workspaceRoot}/out/**/*.js"],

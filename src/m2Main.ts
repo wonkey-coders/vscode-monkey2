@@ -29,7 +29,7 @@ import { showTestOutput } from './testUtils';
 import * as goGenerateTests from './m2GenerateTests';
 import { addImport } from './m2Import';
 import { installAllTools, checkLanguageServer } from './m2InstallTools';
-import { isGoPathSet, getBinPath, sendTelemetryEvent, getExtensionCommands, getGoVersion, getCurrentGoPath } from './util';
+import { isGoPathSet, getBinPath, sendTelemetryEvent, getExtensionCommands, getGoVersion, getCurrentMonkey2Path } from './util';
 import { LanguageClient } from 'vscode-languageclient';
 import { clearCacheForTools } from './m2Path';
 import { addTags, removeTags } from './m2Modifytags';
@@ -72,7 +72,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 		if (langServerAvailable) {
 			let langServerFlags: string[] = vscode.workspace.getConfiguration('go')['languageServerFlags'] || [];
 			// Language Server needs GOPATH to be in process.env
-			process.env['M2PATH'] = getCurrentGoPath();
+			process.env['M2PATH'] = getCurrentMonkey2Path();
 			const c = new LanguageClient(
 				'go-langserver',
 				{
@@ -127,7 +127,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 	startBuildOnSaveWatcher(ctx.subscriptions);
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('go.gopath', () => {
-		let gopath = getCurrentGoPath();
+		let gopath = getCurrentMonkey2Path();
 		let wasInfered = vscode.workspace.getConfiguration('go')['inferGopath'];
 
 		// not only if it was configured, but if it was successful.
@@ -249,7 +249,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 				'mode': 'debug',
 				'program': activeEditor.document.fileName,
 				'env': {
-					'M2PATH': getCurrentGoPath()
+					'M2PATH': getCurrentMonkey2Path()
 				}
 			});
 		}
