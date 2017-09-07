@@ -5,7 +5,7 @@
 
 import vscode = require('vscode');
 import path = require('path');
-import { getMonkey2RuntimePath, getBinPathWithPreferredMonkey2path, resolvePath, getInferredGopath } from './m2Path';
+import { getMonkey2RuntimePath, getBinPathWithPreferredMonkey2path, resolvePath, getInferredMonkey2Path } from './m2Path';
 import cp = require('child_process');
 import TelemetryReporter from 'vscode-extension-telemetry';
 import fs = require('fs');
@@ -46,9 +46,10 @@ export const goKeywords: string[] = [
 export interface SemVersion {
 	major: number;
 	minor: number;
+	rev: number;
 }
 
-let goVersion: SemVersion = null;
+let mx2ccVersion: SemVersion = null;
 let vendorSupport: boolean = null;
 let telemtryReporter: TelemetryReporter;
 
@@ -125,17 +126,17 @@ export function parameters(signature: string): string[] {
 	return null;
 }
 
-export function canonicalizeGOPATHPrefix(filename: string): string {
+export function canonicalizeM2PATHPrefix(filename: string): string {
 	let gopath: string = getCurrentMonkey2Path();
 	if (!gopath) return filename;
 	let workspaces = gopath.split(path.delimiter);
 	let filenameLowercase = filename.toLowerCase();
 
 	// In case of multiple workspaces, find current workspace by checking if current file is
-	// under any of the workspaces in $GOPATH
+	// under any of the workspaces in $M2PATH
 	let currentWorkspace: string = null;
 	for (let workspace of workspaces) {
-		// In case of nested workspaces, (example: both /Users/me and /Users/me/a/b/c are in $GOPATH)
+		// In case of nested workspaces, (example: both /Users/me and /Users/me/a/b/c are in $M2PATH)
 		// both parent & child workspace in the nested workspaces pair can make it inside the above if block
 		// Therefore, the below check will take longer (more specific to current file) of the two
 		if (filenameLowercase.substring(0, workspace.length) === workspace.toLowerCase()
@@ -152,7 +153,7 @@ export function canonicalizeGOPATHPrefix(filename: string): string {
  * Gets version of Go based on the output of the command `go version`.
  * Returns null if go is being used from source/tip in which case `go version` will not return release tag like go1.6.3
  */
-export function getGoVersion(): Promise<SemVersion> {
+export function getMonkey2Version(): Promise<SemVersion> {
 	let m2RuntimePath = getMonkey2RuntimePath();
 
 	if (!m2RuntimePath) {
@@ -160,23 +161,24 @@ export function getGoVersion(): Promise<SemVersion> {
 		return Promise.resolve(null);
 	}
 
-	if (goVersion) {
-		sendTelemetryEvent('getGoVersion', { version: `${goVersion.major}.${goVersion.minor}` });
-		return Promise.resolve(goVersion);
+	if (mx2ccVersion) {
+		sendTelemetryEvent('getMonkey2Version', { version: `${mx2ccVersion.major}.${mx2ccVersion.minor}` });
+		return Promise.resolve(mx2ccVersion);
 	}
 	return new Promise<SemVersion>((resolve, reject) => {
-		cp.execFile(m2RuntimePath, ['version'], {}, (err, stdout, stderr) => {
-			let matches = /go version go(\d).(\d).*/.exec(stdout);
+		cp.execFile(m2RuntimePath, [], {}, (err, stdout, stderr) => {
+			let matches = /Mx2cc version (\d).(\d).(\d).*/.exec(stdout);
 			if (matches) {
-				goVersion = {
+				mx2ccVersion = {
 					major: parseInt(matches[1]),
-					minor: parseInt(matches[2])
+					minor: parseInt(matches[2]),
+					rev: parseInt(matches[3])					
 				};
-				sendTelemetryEvent('getGoVersion', { version: `${goVersion.major}.${goVersion.minor}` });
+				sendTelemetryEvent('getMonkey2Version', { version: `${mx2ccVersion.major}.${mx2ccVersion.minor}.${mx2ccVersion.rev}` });
 			} else {
-				sendTelemetryEvent('getGoVersion', { version: stdout });
+				sendTelemetryEvent('getMonkey2Version', { version: stdout });
 			}
-			return resolve(goVersion);
+			return resolve(mx2ccVersion);
 		});
 	});
 }
@@ -188,7 +190,7 @@ export function isVendorSupported(): Promise<boolean> {
 	if (vendorSupport != null) {
 		return Promise.resolve(vendorSupport);
 	}
-	return getGoVersion().then(version => {
+	return getMonkey2Version().then(version => {
 		if (!version) {
 			return process.env['GO15VENDOREXPERIMENT'] === '0' ? false : true;
 		}
@@ -209,13 +211,13 @@ export function isVendorSupported(): Promise<boolean> {
 }
 
 /**
- * Returns boolean indicating if GOPATH is set or not
- * If not set, then prompts user to do set GOPATH
+ * Returns boolean indicating if M2PATH is set or not
+ * If not set, then prompts user to do set M2PATH
  */
-export function isGoPathSet(): boolean {
+export function isMonkey2PathSet(): boolean {
 	if (!getCurrentMonkey2Path()) {
-		vscode.window.showInformationMessage('Set GOPATH environment variable and restart VS Code or set GOPATH in Workspace settings', 'Set GOPATH in Workspace Settings').then(selected => {
-			if (selected === 'Set GOPATH in Workspace Settings') {
+		vscode.window.showInformationMessage('Set M2PATH environment variable and restart VS Code or set M2PATH in Workspace settings', 'Set M2PATH in Workspace Settings').then(selected => {
+			if (selected === 'Set M2PATH in Workspace Settings') {
 				let settingsFilePath = path.join(vscode.workspace.rootPath, '.vscode', 'settings.json');
 				vscode.commands.executeCommand('vscode.open', vscode.Uri.file(settingsFilePath));
 			}
@@ -272,7 +274,7 @@ export function getToolsEnvVars(): any {
 
 	let gopath = getCurrentMonkey2Path();
 
-	let envVars = Object.assign({}, process.env, gopath ? { GOPATH: gopath } : {});
+	let envVars = Object.assign({}, process.env, gopath ? { M2PATH: gopath } : {});
 
 	if (!toolsEnvVars || typeof toolsEnvVars !== 'object' || Object.keys(toolsEnvVars).length === 0) {
 		return envVars;
@@ -281,13 +283,13 @@ export function getToolsEnvVars(): any {
 }
 
 export function getCurrentMonkey2Path(): string {
-	let configGopath = vscode.workspace.getConfiguration('monkey2')['monkey2path'];
+	let configM2Path = vscode.workspace.getConfiguration('monkey2')['mx2path'];
 	let inferredMonkey2path;
-	if (vscode.workspace.getConfiguration('monkey2')['inferMonkey2path'] === true) {
-		inferredMonkey2path = getInferredGopath(vscode.workspace.rootPath);
+	if (vscode.workspace.getConfiguration('monkey2')['inferPath'] === true) {
+		inferredMonkey2path = getInferredMonkey2Path(vscode.workspace.rootPath);
 	}
 
-	return inferredMonkey2path ? inferredMonkey2path : (configGopath ? resolvePath(configGopath, vscode.workspace.rootPath) : process.env['M2PATH']);
+	return inferredMonkey2path ? inferredMonkey2path : (configM2Path ? resolvePath(configM2Path, vscode.workspace.rootPath) : process.env['M2PATH']);
 }
 
 export function getExtensionCommands(): any[] {

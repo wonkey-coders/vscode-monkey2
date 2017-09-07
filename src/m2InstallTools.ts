@@ -13,13 +13,13 @@ import cp = require('child_process');
 import { showGoStatus, hideGoStatus } from './m2Status';
 import { getMonkey2RuntimePath, resolvePath } from './m2Path';
 import { outputChannel } from './m2Status';
-import { getBinPath, getToolsGopath, getGoVersion, SemVersion, isVendorSupported, getCurrentMonkey2Path } from './util';
+import { getBinPath, getToolsGopath, getMonkey2Version, SemVersion, isVendorSupported, getCurrentMonkey2Path } from './util';
 import { goLiveErrorsEnabled } from './m2LiveErrors';
 
 let updatesDeclinedTools: string[] = [];
 let installsDeclinedTools: string[] = [];
 
-function getTools(goVersion: SemVersion): { [key: string]: string } {
+function getTools(mx2ccVersion: SemVersion): { [key: string]: string } {
 	let goConfig = vscode.workspace.getConfiguration('go');
 	let tools: { [key: string]: string } = {
 		'gocode': 'github.com/nsf/gocode',
@@ -51,7 +51,7 @@ function getTools(goVersion: SemVersion): { [key: string]: string } {
 	}
 
 	// golint and gotests are not supported in go1.5
-	if (!goVersion || (goVersion.major > 1 || (goVersion.major === 1 && goVersion.minor > 5))) {
+	if (!mx2ccVersion || (mx2ccVersion.major > 1 || (mx2ccVersion.major === 1 && mx2ccVersion.minor > 5))) {
 		tools['golint'] = 'github.com/golang/lint/golint';
 		tools['gotests'] = 'github.com/cweill/gotests/...';
 	}
@@ -75,7 +75,7 @@ function getTools(goVersion: SemVersion): { [key: string]: string } {
 }
 
 export function installAllTools() {
-	getGoVersion().then((goVersion) => installTools(goVersion));
+	getMonkey2Version().then((mx2ccVersion) => installTools(mx2ccVersion));
 }
 
 export function promptForMissingTool(tool: string) {
@@ -83,8 +83,8 @@ export function promptForMissingTool(tool: string) {
 	if (installsDeclinedTools.indexOf(tool) > -1) {
 		return;
 	}
-	getGoVersion().then((goVersion) => {
-		if (goVersion && goVersion.major === 1 && goVersion.minor < 6) {
+	getMonkey2Version().then((mx2ccVersion) => {
+		if (mx2ccVersion && mx2ccVersion.major === 1 && mx2ccVersion.minor < 6) {
 			if (tool === 'golint') {
 				vscode.window.showInformationMessage('golint no longer supports go1.5, update your settings to use gometalinter as go.lintTool and install gometalinter');
 				return;
@@ -95,11 +95,11 @@ export function promptForMissingTool(tool: string) {
 			}
 		}
 
-		vscode.window.showInformationMessage(`The "${tool}" command is not available.  Use "go get -v ${getTools(goVersion)[tool]}" to install.`, 'Install', 'Install All').then(selected => {
+		vscode.window.showInformationMessage(`The "${tool}" command is not available.  Use "go get -v ${getTools(mx2ccVersion)[tool]}" to install.`, 'Install', 'Install All').then(selected => {
 			if (selected === 'Install') {
-				installTools(goVersion, [tool]);
+				installTools(mx2ccVersion, [tool]);
 			} else if (selected === 'Install All') {
-				getMissingTools(goVersion).then((missing) => installTools(goVersion, missing));
+				getMissingTools(mx2ccVersion).then((missing) => installTools(mx2ccVersion, missing));
 				hideGoStatus();
 			} else {
 				installsDeclinedTools.push(tool);
@@ -113,10 +113,10 @@ export function promptForUpdatingTool(tool: string) {
 	if (updatesDeclinedTools.indexOf(tool) > -1) {
 		return;
 	}
-	getGoVersion().then((goVersion) => {
-		vscode.window.showInformationMessage(`The Go extension is better with the latest version of "${tool}". Use "go get -u -v ${getTools(goVersion)[tool]}" to update`, 'Update').then(selected => {
+	getMonkey2Version().then((mx2ccVersion) => {
+		vscode.window.showInformationMessage(`The Go extension is better with the latest version of "${tool}". Use "go get -u -v ${getTools(mx2ccVersion)[tool]}" to update`, 'Update').then(selected => {
 			if (selected === 'Update') {
-				installTools(goVersion, [tool]);
+				installTools(mx2ccVersion, [tool]);
 			} else {
 				updatesDeclinedTools.push(tool);
 			}
@@ -129,8 +129,8 @@ export function promptForUpdatingTool(tool: string) {
  *
  * @param string[] array of tool names to be installed
  */
-function installTools(goVersion: SemVersion, missing?: string[]) {
-	let tools = getTools(goVersion);
+function installTools(mx2ccVersion: SemVersion, missing?: string[]) {
+	let tools = getTools(mx2ccVersion);
 	let m2RuntimePath = getMonkey2RuntimePath();
 	if (!m2RuntimePath) {
 		vscode.window.showInformationMessage('Cannot find ",mx2cc" binary. Update PATH or M2ROOT appropriately');
@@ -152,7 +152,7 @@ function installTools(goVersion: SemVersion, missing?: string[]) {
 		});
 	}
 
-	// If the go.toolsGopath is set, use its value as the GOPATH for the "go get" child process.
+	// If the go.toolsGopath is set, use its value as the M2PATH for the "go get" child process.
 	// Else use the Current Gopath
 	let toolsGopath = getToolsGopath() || getCurrentMonkey2Path();
 	if (toolsGopath) {
@@ -225,20 +225,20 @@ function installTools(goVersion: SemVersion, missing?: string[]) {
 	});
 }
 
-export function updateGoPathGoRootFromConfig(): Promise<void> {
-	let goroot = vscode.workspace.getConfiguration('go')['goroot'];
-	if (goroot) {
-		process.env['GOROOT'] = goroot;
+export function updateM2PathM2RootFromConfig(): Promise<void> {
+	let m2root = vscode.workspace.getConfiguration('monkey2')['monkey2root'];
+	if (m2root) {
+		process.env['M2ROOT'] = m2root;
 	}
 
 	if (process.env['M2PATH']) {
 		return Promise.resolve();
 	}
 
-	// If GOPATH is still not set, then use the one from `go env`
+	// If M2PATH is still not set, then use the one from `go env`
 	let m2RuntimePath = getMonkey2RuntimePath();
 	return new Promise<void>((resolve, reject) => {
-		cp.execFile(m2RuntimePath, ['env', 'M2PATH'], (err, stdout, stderr) => {
+		cp.execFile(m2RuntimePath, [], (err, stdout, stderr) => {	//['env', 'M2PATH']
 			if (err) {
 				return reject();
 			}
@@ -254,12 +254,12 @@ export function updateGoPathGoRootFromConfig(): Promise<void> {
 export function offerToInstallTools() {
 	isVendorSupported();
 
-	getGoVersion().then(goVersion => {
-		getMissingTools(goVersion).then(missing => {
+	getMonkey2Version().then(mx2ccVersion => {
+		getMissingTools(mx2ccVersion).then(missing => {
 			if (missing.length > 0) {
-				showGoStatus('Analysis Tools Missing', 'go.promptforinstall', 'Not all Go tools are available on the GOPATH');
+				showGoStatus('Analysis Tools Missing', 'go.promptforinstall', 'Not all Go tools are available on the M2PATH');
 				vscode.commands.registerCommand('go.promptforinstall', () => {
-					promptForInstall(goVersion, missing);
+					promptForInstall(mx2ccVersion, missing);
 					hideGoStatus();
 				});
 			}
@@ -267,14 +267,14 @@ export function offerToInstallTools() {
 	});
 
 
-	function promptForInstall(goVersion: SemVersion, missing: string[]) {
+	function promptForInstall(mx2ccVersion: SemVersion, missing: string[]) {
 		let item = {
 			title: 'Install',
 			command() {
-				installTools(goVersion, missing);
+				installTools(mx2ccVersion, missing);
 			}
 		};
-		vscode.window.showInformationMessage('Some Go analysis tools are missing from your GOPATH.  Would you like to install them?', item).then(selection => {
+		vscode.window.showInformationMessage('Some Go analysis tools are missing from your M2PATH.  Would you like to install them?', item).then(selection => {
 			if (selection) {
 				selection.command();
 			}
@@ -282,8 +282,8 @@ export function offerToInstallTools() {
 	}
 }
 
-function getMissingTools(goVersion: SemVersion): Promise<string[]> {
-	let keys = Object.keys(getTools(goVersion));
+function getMissingTools(mx2ccVersion: SemVersion): Promise<string[]> {
+	let keys = Object.keys(getTools(mx2ccVersion));
 	return Promise.all<string>(keys.map(tool => new Promise<string>((resolve, reject) => {
 		let toolPath = getBinPath(tool);
 		fs.exists(toolPath, exists => {

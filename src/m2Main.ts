@@ -19,7 +19,7 @@ import { GoSignatureHelpProvider } from './m2Signature';
 import { GoWorkspaceSymbolProvider } from './m2Symbol';
 import { GoCodeActionProvider } from './m2CodeAction';
 import { check, ICheckResult, removeTestStatus } from './m2Check';
-import { updateGoPathGoRootFromConfig, offerToInstallTools } from './m2InstallTools';
+import { updateM2PathM2RootFromConfig, offerToInstallTools } from './m2InstallTools';
 import { GO_MODE } from './m2Mode';
 import { showHideStatus } from './m2Status';
 import { toggleCoverageCurrentPackage, getCodeCoverage, removeCodeCoverage } from './m2Cover';
@@ -29,7 +29,7 @@ import { showTestOutput } from './testUtils';
 import * as goGenerateTests from './m2GenerateTests';
 import { addImport } from './m2Import';
 import { installAllTools, checkLanguageServer } from './m2InstallTools';
-import { isGoPathSet, getBinPath, sendTelemetryEvent, getExtensionCommands, getGoVersion, getCurrentMonkey2Path } from './util';
+import { isMonkey2PathSet, getBinPath, sendTelemetryEvent, getExtensionCommands, getMonkey2Version, getCurrentMonkey2Path } from './util';
 import { LanguageClient } from 'vscode-languageclient';
 import { clearCacheForTools } from './m2Path';
 import { addTags, removeTags } from './m2Modifytags';
@@ -47,10 +47,10 @@ export function activate(ctx: vscode.ExtensionContext): void {
 	let langServerFlags: string[] = vscode.workspace.getConfiguration('go')['languageServerFlags'] || [];
 	let toolsGopath = vscode.workspace.getConfiguration('go')['toolsGopath'];
 
-	updateGoPathGoRootFromConfig().then(() => {
-		getGoVersion().then(currentVersion => {
+	updateM2PathM2RootFromConfig().then(() => {
+		getMonkey2Version().then(currentVersion => {
 			if (currentVersion) {
-				const prevVersion = ctx.globalState.get('goVersion');
+				const prevVersion = ctx.globalState.get('mx2ccVersion');
 				const currVersionString = `${currentVersion.major}.${currentVersion.minor}`;
 
 				if (prevVersion !== currVersionString) {
@@ -62,7 +62,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 							}
 						});
 					}
-					ctx.globalState.update('goVersion', currVersionString);
+					ctx.globalState.update('mx2ccVersion', currVersionString);
 				}
 			}
 		});
@@ -71,7 +71,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 		let langServerAvailable = checkLanguageServer();
 		if (langServerAvailable) {
 			let langServerFlags: string[] = vscode.workspace.getConfiguration('go')['languageServerFlags'] || [];
-			// Language Server needs GOPATH to be in process.env
+			// Language Server needs M2PATH to be in process.env
 			process.env['M2PATH'] = getCurrentMonkey2Path();
 			const c = new LanguageClient(
 				'go-langserver',
@@ -100,7 +100,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 			ctx.subscriptions.push(vscode.languages.registerSignatureHelpProvider(GO_MODE, new GoSignatureHelpProvider(), '(', ','));
 		}
 
-		if (vscode.window.activeTextEditor && isGoPathSet()) {
+		if (vscode.window.activeTextEditor && isMonkey2PathSet()) {
 			runBuilds(vscode.window.activeTextEditor.document, vscode.workspace.getConfiguration('go'));
 		}
 	});
@@ -132,9 +132,9 @@ export function activate(ctx: vscode.ExtensionContext): void {
 
 		// not only if it was configured, but if it was successful.
 		if (wasInfered && vscode.workspace.rootPath.indexOf(gopath) === 0) {
-			vscode.window.showInformationMessage('Current GOPATH is inferred from workspace root: ' + gopath);
+			vscode.window.showInformationMessage('Current M2PATH is inferred from workspace root: ' + gopath);
 		} else {
-			vscode.window.showInformationMessage('Current GOPATH: ' + gopath);
+			vscode.window.showInformationMessage('Current M2PATH: ' + gopath);
 		}
 	}));
 
@@ -197,7 +197,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 	ctx.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
 		let updatedGoConfig = vscode.workspace.getConfiguration('go');
 		sendTelemetryEventForConfig(updatedGoConfig);
-		updateGoPathGoRootFromConfig();
+		updateM2PathM2RootFromConfig();
 
 		// If there was a change in "useLanguageServer" setting, then ask the user to reload VS Code.
 		if (process.platform !== 'win32'

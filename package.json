@@ -455,23 +455,23 @@
           "default": true,
           "description": "Run the formatting tools with the -d flag"
         },
-        "m2.inferGopath": {
+        "m2.inferPath": {
           "type": "boolean",
           "default": false,
-          "description": "Infer GOPATH from the workspace root."
+          "description": "Infer M2PATH from the workspace root."
         },
-        "m2.gopath": {
+        "m2.m2path": {
           "type": [
             "string",
             "null"
           ],
           "default": null,
-          "description": "Specify GOPATH here to override the one that is set as environment variable. The inferred GOPATH from workspace root overrides this, if go.inferGopath is set to true."
+          "description": "Specify M2PATH here to override the one that is set as environment variable. The inferred M2PATH from workspace root overrides this, if go.inferGopath is set to true."
         },
         "m2.toolsGopath": {
           "type": "string",
           "default": "",
-          "description": "Location to install the Go tools that the extension depends on if you don't want them in your GOPATH."
+          "description": "Location to install the Go tools that the extension depends on if you don't want them in your M2PATH."
         },
         "m2.goroot": {
           "type": [

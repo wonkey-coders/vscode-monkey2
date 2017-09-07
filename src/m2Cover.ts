@@ -61,7 +61,7 @@ export function removeCodeCoverage(e: vscode.TextDocumentChangeEvent) {
 	}
 	for (let filename in coverageFiles) {
 		let found = editor.document.uri.fsPath.endsWith(filename);
-		// Check for file again if outside the $GOPATH.
+		// Check for file again if outside the $M2PATH.
 		if (!found && filename.startsWith('_')) {
 			found = editor.document.uri.fsPath.endsWith(filename.slice(1));
 		}
@@ -82,7 +82,7 @@ export function toggleCoverageCurrentPackage() {
 	// If current file has highlights, then remove coverage, else add coverage
 	for (let filename in coverageFiles) {
 		let found = editor.document.uri.fsPath.endsWith(filename);
-		// Check for file again if outside the $GOPATH.
+		// Check for file again if outside the $M2PATH.
 		if (!found && filename.startsWith('_')) {
 			found = editor.document.uri.fsPath.endsWith(filename.slice(1));
 		}
@@ -130,7 +130,7 @@ function applyCoverage(remove: boolean = false) {
 		// Highlight lines in current editor.
 		let editor = vscode.window.visibleTextEditors.find((value, index, obj) => {
 			let found = value.document.fileName.endsWith(filename);
-			// Check for file again if outside the $GOPATH.
+			// Check for file again if outside the $M2PATH.
 			if (!found && filename.startsWith('_')) {
 				found = value.document.fileName.endsWith(filename.slice(1));
 			}

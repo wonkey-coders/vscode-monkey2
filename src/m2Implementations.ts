@@ -3,7 +3,7 @@
 import vscode = require('vscode');
 import cp = require('child_process');
 import path = require('path');
-import { byteOffsetAt, getBinPath, canonicalizeGOPATHPrefix } from './util';
+import { byteOffsetAt, getBinPath, canonicalizeM2PATHPrefix } from './util';
 import { promptForMissingTool } from './m2InstallTools';
 import { goKeywords, isPositionInString, getToolsEnvVars } from './util';
 import { getMonkey2RuntimePath, resolvePath } from './m2Path';
@@ -39,7 +39,7 @@ export class GoImplementationProvider implements vscode.ImplementationProvider {
 				}
 				let listOutput = <GoListOutput>JSON.parse(stdout.toString());
 				let scope = listOutput.ImportPath;
-				let filename = canonicalizeGOPATHPrefix(document.fileName);
+				let filename = canonicalizeM2PATHPrefix(document.fileName);
 				let cwd = path.dirname(filename);
 				let offset = byteOffsetAt(document, position);
 				let goGuru = getBinPath('guru');

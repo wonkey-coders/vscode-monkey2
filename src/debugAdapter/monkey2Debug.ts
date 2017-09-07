@@ -11,7 +11,7 @@ import { readFileSync, existsSync, lstatSync } from 'fs';
 import { basename, dirname, extname } from 'path';
 import { spawn, ChildProcess, execSync, spawnSync } from 'child_process';
 import { Client, RPCConnection } from 'json-rpc2';
-import { parseEnvFile, getBinPathWithPreferredMonkey2path, resolvePath, stripBOM, getMonkey2RuntimePath, getInferredGopath, getCurrentWorkspaceFromM2PATH } from '../m2Path';
+import { parseEnvFile, getBinPathWithPreferredMonkey2path, resolvePath, stripBOM, getMonkey2RuntimePath, getInferredMonkey2Path, getCurrentWorkspaceFromM2PATH } from '../m2Path';
 import * as logger from 'vscode-debug-logger';
 import * as FS from 'fs';
 
@@ -230,10 +230,10 @@ class Delve {
 			let env = Object.assign({}, process.env, fileEnv, launchArgs.env);
 
 			// If file/package to debug is not under env['M2PATH'], then infer it from the file/package path
-			// Not applicable to exec mode in which case `program` need not point to source code under GOPATH
+			// Not applicable to exec mode in which case `program` need not point to source code under M2PATH
 			let programNotUnderGopath = !env['M2PATH'] || !getCurrentWorkspaceFromM2PATH(env['M2PATH'], isProgramDirectory ? program : path.dirname(program));
 			if (programNotUnderGopath && (mode === 'debug' || mode === 'test')) {
-				env['M2PATH'] = getInferredGopath(isProgramDirectory ? program : path.dirname(program));
+				env['M2PATH'] = getInferredMonkey2Path(isProgramDirectory ? program : path.dirname(program));
 			}
 
 			if (!!launchArgs.noDebug) {
@@ -273,7 +273,7 @@ class Delve {
 
 			if (!existsSync(dlv)) {
 				verbose(`Couldnt find dlv at ${process.env['M2PATH']}${env['M2PATH'] ? ', ' + env['M2PATH'] : ''} or ${process.env['PATH']}`);
-				return reject(`Cannot find Delve debugger. Install from https://github.com/derekparker/delve & ensure it is in your "GOPATH/bin" or "PATH".`);
+				return reject(`Cannot find Delve debugger. Install from https://github.com/derekparker/delve & ensure it is in your "M2PATH/bin" or "PATH".`);
 			}
 			verbose('Using dlv at: ' + dlv);
 

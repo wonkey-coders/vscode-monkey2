@@ -10,7 +10,7 @@ import cp = require('child_process');
 import path = require('path');
 import { byteOffsetAt, getBinPath } from './util';
 import { promptForMissingTool } from './m2InstallTools';
-import { getGoVersion, SemVersion, goKeywords, isPositionInString, getToolsEnvVars, getFileArchive } from './util';
+import { getMonkey2Version, SemVersion, goKeywords, isPositionInString, getToolsEnvVars, getFileArchive } from './util';
 
 const missingToolMsg = 'Missing tool: ';
 
@@ -37,7 +37,7 @@ export function definitionLocation(document: vscode.TextDocument, position: vsco
 	let toolForDocs = goConfig['docsTool'] || 'godoc';
 	let offset = byteOffsetAt(document, position);
 	let env = getToolsEnvVars();
-	return getGoVersion().then((ver: SemVersion) => {
+	return getMonkey2Version().then((ver: SemVersion) => {
 		// If no Go version can be parsed, it means it's a non-tagged one.
 		// Assume it's > Go 1.5
 		if (toolForDocs === 'godoc' || (ver && (ver.major < 1 || (ver.major === 1 && ver.minor < 6)))) {

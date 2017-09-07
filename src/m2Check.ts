@@ -239,8 +239,8 @@ export function check(filename: string, goConfig: vscode.WorkspaceConfiguration)
 				args.push('--aggregate');
 			}
 			if (goConfig['toolsGopath']) {
-				// gometalinter will expect its linters to be in the GOPATH
-				// So add the toolsGopath to GOPATH
+				// gometalinter will expect its linters to be in the M2PATH
+				// So add the toolsGopath to M2PATH
 				lintEnv['M2PATH'] += path.delimiter + goConfig['toolsGopath'];
 			}
 		}

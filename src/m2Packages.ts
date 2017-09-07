@@ -29,7 +29,7 @@ export function goListAll(): Promise<Map<string, string>> {
 	}
 
 	goListAllPromise = new Promise<Map<string, string>>((resolve, reject) => {
-		// Use `{env: {}}` to make the execution faster. Include GOPATH to account if custom work space exists.
+		// Use `{env: {}}` to make the execution faster. Include M2PATH to account if custom work space exists.
 		const env: any = getToolsEnvVars();
 
 		const cmd = cp.spawn(m2RuntimePath, ['list', '-f', '{{.Name}};{{.ImportPath}}', 'all'], { env: env });

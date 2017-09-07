@@ -35,7 +35,7 @@ export function getBinPathWithPreferredMonkey2path(binname: string, ...preferred
 
 	for (let i = 0; i < preferredGopaths.length; i++) {
 		if (typeof preferredGopaths[i] === 'string') {
-			// Search in the preferred GOPATH workspace's bin folder
+			// Search in the preferred M2PATH workspace's bin folder
 			let pathFrompreferredGoPath = getBinPathFromEnvVar(binname, preferredGopaths[i], true);
 			if (pathFrompreferredGoPath) {
 				return pathFrompreferredGoPath;
@@ -73,9 +73,9 @@ function correctBinname(binname: string) {
  */
 export function getMonkey2RuntimePath(): string {
 	if (runtimePathCache) return runtimePathCache;
-	let correctBinNameGo = correctBinname('mx2cc');
+	let correctBinName = correctBinname('mx2cc');
 	if (process.env['M2ROOT']) {
-		let runtimePathFromGoRoot = path.join(process.env['GOROOT'], 'bin', correctBinNameGo);
+		let runtimePathFromGoRoot = path.join(process.env['GOROOT'], 'bin', correctBinName);
 		if (fileExists(runtimePathFromGoRoot)) {
 			runtimePathCache = runtimePathFromGoRoot;
 			return runtimePathCache;
@@ -84,10 +84,10 @@ export function getMonkey2RuntimePath(): string {
 
 	if (process.env['PATH']) {
 		let pathparts = (<string>process.env.PATH).split(path.delimiter);
-		runtimePathCache = pathparts.map(dir => path.join(dir, correctBinNameGo)).filter(candidate => fileExists(candidate))[0];
+		runtimePathCache = pathparts.map(dir => path.join(dir, correctBinName)).filter(candidate => fileExists(candidate))[0];
 	}
 	if (!runtimePathCache) {
-		let defaultPathForGo = process.platform === 'win32' ? 'C:\\Go\\bin\\go.exe' : '/usr/local/go/bin/go';
+		let defaultPathForGo = process.platform === 'win32' ? 'C:\\Monkey2\\bin\\mx2cc_windows.exe' : '/usr/local/monkey2/bin/mx2cc_linux';
 		if (fileExists(defaultPathForGo)) {
 			runtimePathCache = defaultPathForGo;
 		}
@@ -149,12 +149,12 @@ export function parseEnvFile(path: string): { [key: string]: string } {
 	}
 }
 
-// Walks up given folder path to return the closest ancestor that has `src` as a child
-export function getInferredGopath(folderPath: string): string {
+// Walks up given folder path to return the closest ancestor that has `modules` as a child
+export function getInferredMonkey2Path(folderPath: string): string {
 	let dirs = folderPath.toLowerCase().split(path.sep);
 
 	// find src directory closest to given folder path
-	let srcIdx = dirs.lastIndexOf('src');
+	let srcIdx = dirs.lastIndexOf('modules');
 	if (srcIdx > 0) {
 		return folderPath.substr(0, dirs.slice(0, srcIdx).join(path.sep).length);
 	}
@@ -162,7 +162,7 @@ export function getInferredGopath(folderPath: string): string {
 
 /**
  * Returns the workspace in the given Gopath to which given directory path belongs to
- * @param gopath string Current Gopath. Can be ; or : separated (as per os) to support multiple paths
+ * @param m2path string Current path. Can be ; or : separated (as per os) to support multiple paths
  * @param currentFileDirPath string
  */
 export function getCurrentWorkspaceFromM2PATH(m2path: string, currentFileDirPath: string): string {
@@ -177,7 +177,7 @@ export function getCurrentWorkspaceFromM2PATH(m2path: string, currentFileDirPath
 	// Find current workspace by checking if current file is
 	// under any of the workspaces in $M2PATH
 	for (let i = 0; i < workspaces.length; i++) {
-		let possibleCurrentWorkspace = path.join(workspaces[i], 'src');
+		let possibleCurrentWorkspace = path.join(workspaces[i], 'modules');
 		if (currentFileDirPath.startsWith(possibleCurrentWorkspace)) {
 			// In case of nested workspaces, (example: both /Users/me and /Users/me/src/a/b/c are in $M2PATH)
 			// both parent & child workspace in the nested workspaces pair can make it inside the above if block

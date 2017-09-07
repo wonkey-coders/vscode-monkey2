@@ -17,7 +17,7 @@ import cp = require('child_process');
 import { getEditsFromUnifiedDiffStr, getEdits } from '../src/diffUtils';
 import jsDiff = require('diff');
 import { testCurrentFile } from '../src/m2Test';
-import { getBinPath, getGoVersion, isVendorSupported } from '../src/util';
+import { getBinPath, getMonkey2Version, isVendorSupported } from '../src/util';
 import { documentSymbols } from '../src/m2Outline';
 import { listPackages } from '../src/m2Import';
 import { generateTestCurrentFile, generateTestCurrentPackage, generateTestCurrentFunction } from '../src/m2GenerateTests';
@@ -34,7 +34,7 @@ suite('Go Extension Tests', () => {
 	let goListAllPromise = goListAll();
 
 	suiteSetup(() => {
-		assert.ok(gopath !== null, 'GOPATH is not defined');
+		assert.ok(gopath !== null, 'M2PATH is not defined');
 		fs.removeSync(repoPath);
 		fs.copySync(path.join(fixtureSourcePath, 'test.go'), path.join(fixturePath, 'test.go'));
 		fs.copySync(path.join(fixtureSourcePath, 'errorsTest', 'errors.go'), path.join(fixturePath, 'errorsTest', 'errors.go'));
@@ -129,7 +129,7 @@ suite('Go Extension Tests', () => {
 		let config = Object.create(vscode.workspace.getConfiguration('go'), {
 			'docsTool': { value: 'gogetdoc' }
 		});
-		getGoVersion().then(version => {
+		getMonkey2Version().then(version => {
 			if (!version || version.major > 1 || (version.major === 1 && version.minor > 5)) {
 				return testDefinitionProvider(config);
 			}
@@ -167,7 +167,7 @@ It returns the number of bytes written and any write error encountered.
 		let config = Object.create(vscode.workspace.getConfiguration('go'), {
 			'docsTool': { value: 'gogetdoc' }
 		});
-		getGoVersion().then(version => {
+		getMonkey2Version().then(version => {
 			if (!version || version.major > 1 || (version.major === 1 && version.minor > 5)) {
 				return testSignatureHelpProvider(config, testCases);
 			}
@@ -218,7 +218,7 @@ It returns the number of bytes written and any write error encountered.
 		let config = Object.create(vscode.workspace.getConfiguration('go'), {
 			'docsTool': { value: 'gogetdoc' }
 		});
-		getGoVersion().then(version => {
+		getMonkey2Version().then(version => {
 			if (!version || version.major > 1 || (version.major === 1 && version.minor > 5)) {
 				return testHoverProvider(config, testCases);
 			}
@@ -238,7 +238,7 @@ It returns the number of bytes written and any write error encountered.
 			{ line: 9, severity: 'warning', msg: 'possible formatting directive in Println call' },
 			{ line: 12, severity: 'error', msg: 'undefined: prin' },
 		];
-		getGoVersion().then(version => {
+		getMonkey2Version().then(version => {
 			if (version && version.major === 1 && version.minor < 6) {
 				// golint is not supported in Go 1.5, so skip the test
 				return Promise.resolve();
@@ -259,7 +259,7 @@ It returns the number of bytes written and any write error encountered.
 	});
 
 	test('Test Generate unit tests squeleton for file', (done) => {
-		getGoVersion().then(version => {
+		getMonkey2Version().then(version => {
 			if (version && version.major === 1 && version.minor < 6) {
 				// gotests is not supported in Go 1.5, so skip the test
 				return Promise.resolve();
@@ -285,7 +285,7 @@ It returns the number of bytes written and any write error encountered.
 	});
 
 	test('Test Generate unit tests squeleton for a function', (done) => {
-		getGoVersion().then(version => {
+		getMonkey2Version().then(version => {
 			if (version && version.major === 1 && version.minor < 6) {
 				// gotests is not supported in Go 1.5, so skip the test
 				return Promise.resolve();
@@ -314,7 +314,7 @@ It returns the number of bytes written and any write error encountered.
 	});
 
 	test('Test Generate unit tests squeleton for package', (done) => {
-		getGoVersion().then(version => {
+		getMonkey2Version().then(version => {
 			if (version && version.major === 1 && version.minor < 6) {
 				// gotests is not supported in Go 1.5, so skip the test
 				return Promise.resolve();
@@ -340,7 +340,7 @@ It returns the number of bytes written and any write error encountered.
 	});
 
 	test('Gometalinter error checking', (done) => {
-		getGoVersion().then(version => {
+		getMonkey2Version().then(version => {
 			if (version && version.major === 1 && version.minor < 6) {
 				// golint in gometalinter is not supported in Go 1.5, so skip the test
 				return Promise.resolve();

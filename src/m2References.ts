@@ -8,7 +8,7 @@
 import vscode = require('vscode');
 import cp = require('child_process');
 import path = require('path');
-import { getBinPath, byteOffsetAt, canonicalizeGOPATHPrefix, getFileArchive, getToolsEnvVars } from './util';
+import { getBinPath, byteOffsetAt, canonicalizeM2PATHPrefix, getFileArchive, getToolsEnvVars } from './util';
 import { promptForMissingTool } from './m2InstallTools';
 
 export class GoReferenceProvider implements vscode.ReferenceProvider {
@@ -19,7 +19,7 @@ export class GoReferenceProvider implements vscode.ReferenceProvider {
 
 	private doFindReferences(document: vscode.TextDocument, position: vscode.Position, options: { includeDeclaration: boolean }, token: vscode.CancellationToken): Thenable<vscode.Location[]> {
 		return new Promise<vscode.Location[]>((resolve, reject) => {
-			let filename = canonicalizeGOPATHPrefix(document.fileName);
+			let filename = canonicalizeM2PATHPrefix(document.fileName);
 			let cwd = path.dirname(filename);
 
 			// get current word
