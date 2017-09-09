@@ -5,7 +5,7 @@ import cp = require('child_process');
 import path = require('path');
 import { byteOffsetAt, getBinPath, canonicalizeM2PATHPrefix } from './util';
 import { promptForMissingTool } from './m2InstallTools';
-import { goKeywords, isPositionInString, getToolsEnvVars } from './util';
+import { monkey2Keywords, isPositionInString, getToolsEnvVars } from './util';
 import { getMonkey2RuntimePath, resolvePath } from './m2Path';
 
 interface GoListOutput {

@@ -517,9 +517,9 @@ class GoDebugSession extends DebugSession {
 		// When the pathToConvert is under GOROOT, replace the remote GOROOT with local GOROOT
 		if (!pathToConvert.startsWith(this.delve.remotePath)) {
 			let index = pathToConvert.indexOf(`${this.remotePathSeparator}src${this.remotePathSeparator}`);
-			let goroot = process.env['GOROOT'];
-			if (goroot && index > 0) {
-				return path.join(goroot, pathToConvert.substr(index));
+			let m2root = process.env['M2ROOT'];
+			if (m2root && index > 0) {
+				return path.join(m2root, pathToConvert.substr(index));
 			}
 		}
 		return pathToConvert.replace(this.delve.remotePath, this.delve.program).split(this.remotePathSeparator).join(this.localPathSeparator);

@@ -81,9 +81,9 @@
     ],
     "commands": [
       {
-        "command": "m2.m2path",
-        "title": "Monkey2: Current M2PATH",
-        "description": "See the currently set M2PATH."
+        "command": "m2.path",
+        "title": "Monkey2: Current monkey2 PATH",
+        "description": "See the additonal monkey2 path dirs."
       },
       {
         "command": "m2.test.cursor",
@@ -457,29 +457,29 @@
         },
         "m2.inferPath": {
           "type": "boolean",
-          "default": false,
-          "description": "Infer M2PATH from the workspace root."
+          "default": true,
+          "description": "Infer monkey2 binary PATH from the workspace root."
         },
-        "m2.m2path": {
+        "m2.path": {
           "type": [
             "string",
             "null"
           ],
           "default": null,
-          "description": "Specify M2PATH here to override the one that is set as environment variable. The inferred M2PATH from workspace root overrides this, if go.inferGopath is set to true."
+          "description": "Specify PATH here to override the one that is set as environment variable. The inferred PATH from workspace root overrides this, if m2.inferpath is set to true."
         },
         "m2.toolsGopath": {
           "type": "string",
           "default": "",
           "description": "Location to install the Go tools that the extension depends on if you don't want them in your M2PATH."
         },
-        "m2.goroot": {
+        "m2.root": {
           "type": [
             "string",
             "null"
           ],
           "default": null,
-          "description": "Specifies the GOROOT to use when no environment variable is set."
+          "description": "Specifies the M2ROOT to use when no environment variable is set."
         },
         "m2.testOnSave": {
           "type": "boolean",

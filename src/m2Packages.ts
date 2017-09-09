@@ -119,7 +119,7 @@ export function getNonVendorPackages(folderPath: string): Promise<string[]> {
 	let m2RuntimePath = getMonkey2RuntimePath();
 
 	if (!m2RuntimePath) {
-		vscode.window.showInformationMessage('Cannot find "go" binary. Update PATH or GOROOT appropriately');
+		vscode.window.showInformationMessage('Cannot find "mx2cc" binary. Update PATH or M2ROOT appropriately');
 		return Promise.resolve(null);
 	}
 	return new Promise<string[]>((resolve, reject) => {

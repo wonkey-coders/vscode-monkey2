@@ -49,10 +49,10 @@ export function getBinPathWithPreferredMonkey2path(binname: string, ...preferred
 		return pathFromPath;
 	}
 
-	// Finally check GOROOT just in case
-	let pathFromGoRoot = getBinPathFromEnvVar(binname, process.env['GOROOT'], true);
-	if (pathFromGoRoot) {
-		return pathFromGoRoot;
+	// Finally check M2ROOT just in case
+	let pathFromM2Root = getBinPathFromEnvVar(binname, process.env['M2ROOT'], true);
+	if (pathFromM2Root) {
+		return pathFromM2Root;
 	}
 
 	// Else return the binary name directly (this will likely always fail downstream)
@@ -75,9 +75,9 @@ export function getMonkey2RuntimePath(): string {
 	if (runtimePathCache) return runtimePathCache;
 	let correctBinName = correctBinname('mx2cc');
 	if (process.env['M2ROOT']) {
-		let runtimePathFromGoRoot = path.join(process.env['GOROOT'], 'bin', correctBinName);
-		if (fileExists(runtimePathFromGoRoot)) {
-			runtimePathCache = runtimePathFromGoRoot;
+		let runtimePathFromM2Root = path.join(process.env['M2ROOT'], 'bin', correctBinName);
+		if (fileExists(runtimePathFromM2Root)) {
+			runtimePathCache = runtimePathFromM2Root;
 			return runtimePathCache;
 		}
 	}
@@ -154,7 +154,7 @@ export function getInferredMonkey2Path(folderPath: string): string {
 	let dirs = folderPath.toLowerCase().split(path.sep);
 
 	// find src directory closest to given folder path
-	let srcIdx = dirs.lastIndexOf('modules');
+	let srcIdx = dirs.lastIndexOf('monkey2');
 	if (srcIdx > 0) {
 		return folderPath.substr(0, dirs.slice(0, srcIdx).join(path.sep).length);
 	}

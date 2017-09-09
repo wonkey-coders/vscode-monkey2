@@ -11,36 +11,12 @@ import TelemetryReporter from 'vscode-extension-telemetry';
 import fs = require('fs');
 
 const extensionId: string = 'nitrologic.monkey2';
-//const extensionVersion: string = "0.0.1";//
 const extensionVersion: string = vscode.extensions.getExtension(extensionId).packageJSON.version;
 const aiKey: string = 'AIF-56fe259a-f869-438a-9eff-928c454c1ec4';
 
-export const goKeywords: string[] = [
-	'break',
-	'case',
-	'chan',
-	'const',
-	'continue',
-	'default',
-	'defer',
-	'else',
-	'fallthrough',
-	'for',
-	'func',
-	'go',
-	'goto',
-	'if',
-	'import',
-	'interface',
-	'map',
-	'package',
-	'range',
-	'return',
-	'select',
-	'struct',
-	'switch',
-	'type',
-	'var'
+export const monkey2Keywords: string[] = [
+	'#Import',
+	'Extern'
 ];
 
 export interface SemVersion {
@@ -157,7 +133,7 @@ export function getMonkey2Version(): Promise<SemVersion> {
 	let m2RuntimePath = getMonkey2RuntimePath();
 
 	if (!m2RuntimePath) {
-		vscode.window.showInformationMessage('Cannot find "mx2cc" binary. Update PATH or GOROOT appropriately');
+		vscode.window.showInformationMessage('Cannot find "mx2cc" binary. Update PATH or M2ROOT appropriately');
 		return Promise.resolve(null);
 	}
 
@@ -167,7 +143,7 @@ export function getMonkey2Version(): Promise<SemVersion> {
 	}
 	return new Promise<SemVersion>((resolve, reject) => {
 		cp.execFile(m2RuntimePath, [], {}, (err, stdout, stderr) => {
-			let matches = /Mx2cc version (\d).(\d).(\d).*/.exec(stdout);
+			let matches = /Mx2cc version (\d).(\d).(\d+).*/.exec(stdout);
 			if (matches) {
 				mx2ccVersion = {
 					major: parseInt(matches[1]),
@@ -216,8 +192,8 @@ export function isVendorSupported(): Promise<boolean> {
  */
 export function isMonkey2PathSet(): boolean {
 	if (!getCurrentMonkey2Path()) {
-		vscode.window.showInformationMessage('Set M2PATH environment variable and restart VS Code or set M2PATH in Workspace settings', 'Set M2PATH in Workspace Settings').then(selected => {
-			if (selected === 'Set M2PATH in Workspace Settings') {
+		vscode.window.showInformationMessage('Set M2PATH environment variable and restart VS Code or set m2.path in Workspace settings', 'Set m2.path in Workspace Settings').then(selected => {
+			if (selected === 'Set m2.path in Workspace Settings') {
 				let settingsFilePath = path.join(vscode.workspace.rootPath, '.vscode', 'settings.json');
 				vscode.commands.executeCommand('vscode.open', vscode.Uri.file(settingsFilePath));
 			}
@@ -283,9 +259,10 @@ export function getToolsEnvVars(): any {
 }
 
 export function getCurrentMonkey2Path(): string {
-	let configM2Path = vscode.workspace.getConfiguration('monkey2')['mx2path'];
+	let config = vscode.workspace.getConfiguration('m2');
+	let configM2Path = config['path'];
 	let inferredMonkey2path;
-	if (vscode.workspace.getConfiguration('monkey2')['inferPath'] === true) {
+	if (config['inferPath'] === true) {
 		inferredMonkey2path = getInferredMonkey2Path(vscode.workspace.rootPath);
 	}
 
