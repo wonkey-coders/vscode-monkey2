@@ -15,7 +15,7 @@ export class GoHoverProvider implements HoverProvider {
 	constructor(m2Config?: WorkspaceConfiguration) {
 		this.m2Config = m2Config;
 		if (!this.m2Config) {
-			this.m2Config = vscode.workspace.getConfiguration('m2');
+			this.m2Config = vscode.workspace.getConfiguration('monkey2');
 		}
 	}
 

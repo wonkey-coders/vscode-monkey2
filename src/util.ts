@@ -193,8 +193,8 @@ export function isVendorSupported(): Promise<boolean> {
  */
 export function isMonkey2PathSet(): boolean {
 	if (!getCurrentMonkey2Path()) {
-		vscode.window.showInformationMessage('Set M2PATH environment variable and restart VS Code or set m2.path in Workspace settings', 'Set m2.path in Workspace Settings').then(selected => {
-			if (selected === 'Set m2.path in Workspace Settings') {
+		vscode.window.showInformationMessage('Set M2PATH environment variable and restart VS Code or set monkey2.path in Workspace settings', 'Set monkey2.path in Workspace Settings').then(selected => {
+			if (selected === 'Set monkey2.path in Workspace Settings') {
 				let settingsFilePath = path.join(vscode.workspace.rootPath, '.vscode', 'settings.json');
 				vscode.commands.executeCommand('vscode.open', vscode.Uri.file(settingsFilePath));
 			}
@@ -229,7 +229,7 @@ export function isPositionInString(document: vscode.TextDocument, position: vsco
 }
 
 export function getToolsGopath(): string {
-	let m2Config = vscode.workspace.getConfiguration('m2');
+	let m2Config = vscode.workspace.getConfiguration('monkey2');
 	let toolsGopath = m2Config['toolsGopath'];
 	if (toolsGopath) {
 		toolsGopath = resolvePath(toolsGopath, vscode.workspace.rootPath);
@@ -247,7 +247,7 @@ export function getFileArchive(document: vscode.TextDocument): string {
 }
 
 export function getToolsEnvVars(): any {
-	let toolsEnvVars = vscode.workspace.getConfiguration('m2')['toolsEnvVars'];
+	let toolsEnvVars = vscode.workspace.getConfiguration('monkey2')['toolsEnvVars'];
 
 	let gopath = getCurrentMonkey2Path();
 
@@ -260,7 +260,7 @@ export function getToolsEnvVars(): any {
 }
 
 export function getCurrentMonkey2Path(): string {
-	let config = vscode.workspace.getConfiguration('m2');
+	let config = vscode.workspace.getConfiguration('monkey2');
 	let configM2Path = config['path'];
 	let inferredMonkey2path;
 	if (config['inferPath'] === true) {

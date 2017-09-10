@@ -30,7 +30,7 @@ export function addTags(commandArgs: GoTagsConfig) {
 		return;
 	}
 
-	getTagsAndOptions(<GoTagsConfig>vscode.workspace.getConfiguration('m2')['addTags'], commandArgs).then(([tags, options, transformValue]) => {
+	getTagsAndOptions(<GoTagsConfig>vscode.workspace.getConfiguration('monkey2')['addTags'], commandArgs).then(([tags, options, transformValue]) => {
 		if (!tags && !options) {
 			return;
 		}
@@ -57,7 +57,7 @@ export function removeTags(commandArgs: GoTagsConfig) {
 		return;
 	}
 
-	getTagsAndOptions(<GoTagsConfig>vscode.workspace.getConfiguration('m2')['removeTags'], commandArgs).then(([tags, options]) => {
+	getTagsAndOptions(<GoTagsConfig>vscode.workspace.getConfiguration('monkey2')['removeTags'], commandArgs).then(([tags, options]) => {
 		if (!tags && !options) {
 			args.push('--clear-tags');
 			args.push('--clear-options');

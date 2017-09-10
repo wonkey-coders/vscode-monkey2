@@ -43,7 +43,7 @@ export class Monkey2ImplementationProvider implements vscode.ImplementationProvi
 				let cwd = path.dirname(filename);
 				let offset = byteOffsetAt(document, position);
 				let goGuru = getBinPath('guru');
-				let buildTags = '"' + vscode.workspace.getConfiguration('m2')['buildTags'] + '"';
+				let buildTags = '"' + vscode.workspace.getConfiguration('monkey2')['buildTags'] + '"';
 				let args = ['-scope', `${scope}/...`, '-json', '-tags', buildTags, 'implements', `${filename}:#${offset.toString()}`];
 
 				let guruProcess = cp.execFile(goGuru, args, {env}, (err, stdout, stderr) => {

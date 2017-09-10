@@ -93,7 +93,7 @@ export function toggleCoverageCurrentPackage() {
 	}
 
 	// FIXME: is there a better way to get m2Config?
-	let m2Config = vscode.workspace.getConfiguration('m2');
+	let m2Config = vscode.workspace.getConfiguration('monkey2');
 	let cwd = path.dirname(editor.document.uri.fsPath);
 
 	let buildFlags = m2Config['testFlags'] || m2Config['buildFlags'] || [];
@@ -143,7 +143,7 @@ function applyCoverage(remove: boolean = false) {
 }
 
 function highlightCoverage(editor: vscode.TextEditor, file: CoverageFile, remove: boolean) {
-	let cfg = vscode.workspace.getConfiguration('m2');
+	let cfg = vscode.workspace.getConfiguration('monkey2');
 	let coverageOptions = cfg['coverageOptions'];
 	let coverageDecorator = cfg['coverageDecorator'];
 	let hideUncovered = remove || coverageOptions === 'showCoveredCodeOnly';

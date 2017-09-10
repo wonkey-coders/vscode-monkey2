@@ -32,7 +32,7 @@ export function definitionLocation(document: vscode.TextDocument, position: vsco
 		return Promise.resolve(null);
 	}
 	if (!m2Config) {
-		m2Config = vscode.workspace.getConfiguration('m2');
+		m2Config = vscode.workspace.getConfiguration('monkey2');
 	}
 	let toolForDocs = m2Config['docsTool'] || 'godoc';
 	let offset = byteOffsetAt(document, position);
@@ -120,7 +120,7 @@ function definitionLocation_gogetdoc(document: vscode.TextDocument, position: vs
 	return new Promise<GoDefinitionInformation>((resolve, reject) => {
 		let gogetdoc = getBinPath('gogetdoc');
 		let gogetdocFlagsWithoutTags = ['-u', '-json', '-modified', '-pos', document.fileName + ':#' + offset.toString()];
-		let buildTags = vscode.workspace.getConfiguration('m2')['buildTags'];
+		let buildTags = vscode.workspace.getConfiguration('monkey2')['buildTags'];
 		let gogetdocFlags = (buildTags && useTags) ? [...gogetdocFlagsWithoutTags, '-tags', '"' + buildTags + '"'] : gogetdocFlagsWithoutTags;
 		let p = cp.execFile(gogetdoc, gogetdocFlags, {env}, (err, stdout, stderr) => {
 			try {

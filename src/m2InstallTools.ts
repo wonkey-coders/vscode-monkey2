@@ -20,7 +20,7 @@ let updatesDeclinedTools: string[] = [];
 let installsDeclinedTools: string[] = [];
 
 function getTools(mx2ccVersion: SemVersion): { [key: string]: string } {
-	let m2Config = vscode.workspace.getConfiguration('m2');
+	let m2Config = vscode.workspace.getConfiguration('monkey2');
 	let tools: { [key: string]: string } = {
 		'gocode': 'github.com/nsf/gocode',
 		'gopkgs': 'github.com/tpng/gopkgs',
@@ -300,7 +300,7 @@ function getMissingTools(mx2ccVersion: SemVersion): Promise<string[]> {
 // Returns false in all other cases
 export function checkLanguageServer(): boolean {
 	if (process.platform === 'win32') return false;
-	let latestGoConfig = vscode.workspace.getConfiguration('m2');
+	let latestGoConfig = vscode.workspace.getConfiguration('monkey2');
 	if (!latestGoConfig['useLanguageServer']) return false;
 
 	let langServerAvailable = getBinPath('go-langserver') !== 'go-langserver';

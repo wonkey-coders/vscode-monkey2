@@ -58,7 +58,7 @@ export class Monkey2WorkspaceSymbolProvider implements vscode.WorkspaceSymbolPro
 
 export function getWorkspaceSymbols(workspacePath: string, query: string, m2Config?: vscode.WorkspaceConfiguration, ignoreFolderFeatureOn: boolean = true): Thenable<GoSymbolDeclaration[]> {
 		if (!m2Config) {
-			m2Config = vscode.workspace.getConfiguration('m2');
+			m2Config = vscode.workspace.getConfiguration('monkey2');
 		}
 		let gotoSymbolConfig = m2Config['gotoSymbol'];
 		let ignoreFolders: string[] = gotoSymbolConfig ? gotoSymbolConfig['ignoreFolders'] : [];

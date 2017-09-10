@@ -100,7 +100,7 @@ export class GoDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 	};
 
 	private convertToCodeSymbols(document: vscode.TextDocument, decls: GoOutlineDeclaration[], symbols: vscode.SymbolInformation[], containerName: string): void {
-		let gotoSymbolConfig = vscode.workspace.getConfiguration('m2')['gotoSymbol'];
+		let gotoSymbolConfig = vscode.workspace.getConfiguration('monkey2')['gotoSymbol'];
 		let includeImports = gotoSymbolConfig ? gotoSymbolConfig['includeImports'] : false;
 		decls.forEach(decl => {
 			if (!includeImports && decl.type === 'import') return;

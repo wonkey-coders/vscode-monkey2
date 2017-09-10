@@ -43,9 +43,9 @@ export let errorDiagnosticCollection: vscode.DiagnosticCollection;
 let warningDiagnosticCollection: vscode.DiagnosticCollection;
 
 export function activate(ctx: vscode.ExtensionContext): void {
-	let useLangServer = vscode.workspace.getConfiguration('m2')['useLanguageServer'];
-	let langServerFlags: string[] = vscode.workspace.getConfiguration('m2')['languageServerFlags'] || [];
-	let toolsGopath = vscode.workspace.getConfiguration('m2')['toolsGopath'];
+	let useLangServer = vscode.workspace.getConfiguration('monkey2')['useLanguageServer'];
+	let langServerFlags: string[] = vscode.workspace.getConfiguration('monkey2')['languageServerFlags'] || [];
+	let toolsGopath = vscode.workspace.getConfiguration('monkey2')['toolsGopath'];
 
 	updateM2PathM2RootFromConfig().then(() => {
 		getMonkey2Version().then(currentVersion => {
@@ -70,7 +70,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 		offerToInstallTools();
 		let langServerAvailable = checkLanguageServer();
 		if (langServerAvailable) {
-			let langServerFlags: string[] = vscode.workspace.getConfiguration('m2')['languageServerFlags'] || [];
+			let langServerFlags: string[] = vscode.workspace.getConfiguration('monkey2')['languageServerFlags'] || [];
 			// Language Server needs M2PATH to be in process.env
 			process.env['M2PATH'] = getCurrentMonkey2Path();
 			const c = new LanguageClient(
@@ -101,7 +101,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 		}
 
 		if (vscode.window.activeTextEditor && isMonkey2PathSet()) {
-			runBuilds(vscode.window.activeTextEditor.document, vscode.workspace.getConfiguration('m2'));
+			runBuilds(vscode.window.activeTextEditor.document, vscode.workspace.getConfiguration('monkey2'));
 		}
 	});
 
@@ -128,7 +128,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('m2.gopath', () => {
 		let gopath = getCurrentMonkey2Path();
-		let wasInfered = vscode.workspace.getConfiguration('m2')['inferPath'];
+		let wasInfered = vscode.workspace.getConfiguration('monkey2')['inferPath'];
 
 		// not only if it was configured, but if it was successful.
 		if (wasInfered && vscode.workspace.rootPath.indexOf(gopath) === 0) {
@@ -151,22 +151,22 @@ export function activate(ctx: vscode.ExtensionContext): void {
 	}));
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('m2.test.cursor', (args) => {
-		let m2Config = vscode.workspace.getConfiguration('m2');
+		let m2Config = vscode.workspace.getConfiguration('monkey2');
 		testAtCursor(m2Config, args);
 	}));
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('m2.test.package', (args) => {
-		let m2Config = vscode.workspace.getConfiguration('m2');
+		let m2Config = vscode.workspace.getConfiguration('monkey2');
 		testCurrentPackage(m2Config, args);
 	}));
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('m2.test.file', (args) => {
-		let m2Config = vscode.workspace.getConfiguration('m2');
+		let m2Config = vscode.workspace.getConfiguration('monkey2');
 		testCurrentFile(m2Config, args);
 	}));
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('m2.test.workspace', (args) => {
-		let m2Config = vscode.workspace.getConfiguration('m2');
+		let m2Config = vscode.workspace.getConfiguration('monkey2');
 		testWorkspace(m2Config, args);
 	}));
 
@@ -195,7 +195,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 	}));
 
 	ctx.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
-		let updatedGoConfig = vscode.workspace.getConfiguration('m2');
+		let updatedGoConfig = vscode.workspace.getConfiguration('monkey2');
 		sendTelemetryEventForConfig(updatedGoConfig);
 		updateM2PathM2RootFromConfig();
 
@@ -273,7 +273,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 		wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
 	});
 
-	sendTelemetryEventForConfig(vscode.workspace.getConfiguration('m2'));
+	sendTelemetryEventForConfig(vscode.workspace.getConfiguration('monkey2'));
 }
 
 function deactivate() {
@@ -344,7 +344,7 @@ function startBuildOnSaveWatcher(subscriptions: vscode.Disposable[]) {
 		if (document.languageId !== 'monkey2' || ignoreNextSave.has(document)) {
 			return;
 		}
-		let m2Config = vscode.workspace.getConfiguration('m2');
+		let m2Config = vscode.workspace.getConfiguration('monkey2');
 		let textEditor = vscode.window.activeTextEditor;
 		let formatPromise: PromiseLike<void> = Promise.resolve();
 		if (m2Config['formatOnSave'] && textEditor.document === document) {

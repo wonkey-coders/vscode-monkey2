@@ -56,9 +56,9 @@
   },
   "activationEvents": [
     "onLanguage:monkey2",
-    "onCommand:m2.path",
-    "onCommand:m2.tools.install",
-    "onCommand:m2.debug.startSession"
+    "onCommand:monkey2.path",
+    "onCommand:monkey2.tools.install",
+    "onCommand:monkey2.debug.startSession"
   ],
   "main": "./out/src/m2Main",
   "contributes": {
@@ -81,7 +81,7 @@
     ],
     "commands": [
       {
-        "command": "m2.path",
+        "command": "monkey2.path",
         "title": "Monkey2: Current monkey2 PATH",
         "description": "See the additonal monkey2 path dirs."
       },
@@ -358,6 +358,14 @@
       "type": "object",
       "title": "Monkey2 configuration",
       "properties": {
+        "monkey2.path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Specify PATH here to override the one that is set as environment variable. The inferred PATH from workspace root overrides this, if m2.inferpath is set to true."
+        },
         "m2.buildOnSave": {
           "type": "string",
           "enum": [
@@ -457,14 +465,6 @@
           "type": "boolean",
           "default": true,
           "description": "Infer monkey2 binary PATH from the workspace root."
-        },
-        "m2.path": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "default": null,
-          "description": "Specify PATH here to override the one that is set as environment variable. The inferred PATH from workspace root overrides this, if m2.inferpath is set to true."
         },
         "m2.toolsPath": {
           "type": "string",
