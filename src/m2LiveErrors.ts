@@ -16,7 +16,7 @@ interface GoLiveErrorsConfig {
 let runner;
 
 export function goLiveErrorsEnabled() {
-	let goConfig = <GoLiveErrorsConfig>vscode.workspace.getConfiguration('go')['liveErrors'];
+	let goConfig = <GoLiveErrorsConfig>vscode.workspace.getConfiguration('m2')['liveErrors'];
 	if (goConfig === null || goConfig === undefined || !goConfig.enabled) {
 		return false;
 	}
@@ -36,7 +36,7 @@ export function parseLiveFile(e: vscode.TextDocumentChangeEvent) {
 	if (e.document.isUntitled) {
 		return;
 	}
-	if (e.document.languageId !== 'go') {
+	if (e.document.languageId !== 'm2') {
 		return;
 	}
 	if (!goLiveErrorsEnabled()) {
@@ -49,7 +49,7 @@ export function parseLiveFile(e: vscode.TextDocumentChangeEvent) {
 	runner = setTimeout(function(){
 		processFile(e);
 		runner = null;
-	}, vscode.workspace.getConfiguration('go')['liveErrors']['delay']);
+	}, vscode.workspace.getConfiguration('m2')['liveErrors']['delay']);
 }
 
 // processFile does the actual work once the timeout has fired

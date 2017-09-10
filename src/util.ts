@@ -228,7 +228,7 @@ export function isPositionInString(document: vscode.TextDocument, position: vsco
 }
 
 export function getToolsGopath(): string {
-	let goConfig = vscode.workspace.getConfiguration('go');
+	let goConfig = vscode.workspace.getConfiguration('m2');
 	let toolsGopath = goConfig['toolsGopath'];
 	if (toolsGopath) {
 		toolsGopath = resolvePath(toolsGopath, vscode.workspace.rootPath);
@@ -246,7 +246,7 @@ export function getFileArchive(document: vscode.TextDocument): string {
 }
 
 export function getToolsEnvVars(): any {
-	let toolsEnvVars = vscode.workspace.getConfiguration('go')['toolsEnvVars'];
+	let toolsEnvVars = vscode.workspace.getConfiguration('m2')['toolsEnvVars'];
 
 	let gopath = getCurrentMonkey2Path();
 

@@ -15,7 +15,7 @@ export class GoHoverProvider implements HoverProvider {
 	constructor(goConfig?: WorkspaceConfiguration) {
 		this.goConfig = goConfig;
 		if (!this.goConfig) {
-			this.goConfig = vscode.workspace.getConfiguration('go');
+			this.goConfig = vscode.workspace.getConfiguration('m2');
 		}
 	}
 
@@ -33,7 +33,7 @@ export class GoHoverProvider implements HoverProvider {
 			let text;
 			text = lines.join('\n').replace(/\n+$/, '');
 			let hoverTexts: MarkedString[] = [];
-			hoverTexts.push({ language: 'go', value: text });
+			hoverTexts.push({ language: 'm2', value: text });
 			if (definitionInfo.doc != null) {
 				hoverTexts.push(definitionInfo.doc);
 			}

@@ -98,7 +98,7 @@ function hasTestFunctionPrefix(name: string): boolean {
 }
 
 /**
- * Runs go test and presents the output in the 'Go' channel.
+ * Runs go test and presents the output in the 'Monkey2' channel.
  *
  * @param goConfig Configuration for the Go extension.
  */

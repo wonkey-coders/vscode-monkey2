@@ -58,7 +58,7 @@ export class GoWorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider
 
 export function getWorkspaceSymbols(workspacePath: string, query: string, goConfig?: vscode.WorkspaceConfiguration, ignoreFolderFeatureOn: boolean = true): Thenable<GoSymbolDeclaration[]> {
 		if (!goConfig) {
-			goConfig = vscode.workspace.getConfiguration('go');
+			goConfig = vscode.workspace.getConfiguration('m2');
 		}
 		let gotoSymbolConfig = goConfig['gotoSymbol'];
 		let ignoreFolders: string[] = gotoSymbolConfig ? gotoSymbolConfig['ignoreFolders'] : [];

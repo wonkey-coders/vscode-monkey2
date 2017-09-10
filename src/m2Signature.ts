@@ -17,7 +17,7 @@ export class GoSignatureHelpProvider implements SignatureHelpProvider {
 	constructor(goConfig?: WorkspaceConfiguration) {
 		this.goConfig = goConfig;
 		if (!this.goConfig) {
-			this.goConfig = vscode.workspace.getConfiguration('go');
+			this.goConfig = vscode.workspace.getConfiguration('m2');
 		}
 	}
 

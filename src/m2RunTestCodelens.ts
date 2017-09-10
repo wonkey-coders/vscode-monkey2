@@ -15,7 +15,7 @@ import { getCurrentMonkey2Path } from './util';
 export class GoRunTestCodeLensProvider implements CodeLensProvider {
 	private readonly debugConfig: any = {
 				'name': 'Launch',
-				'type': 'go',
+				'type': 'm2',
 				'request': 'launch',
 				'mode': 'test',
 				'env': {
@@ -24,7 +24,7 @@ export class GoRunTestCodeLensProvider implements CodeLensProvider {
 			};
 
 	public provideCodeLenses(document: TextDocument, token: CancellationToken): CodeLens[] | Thenable<CodeLens[]> {
-		let config = vscode.workspace.getConfiguration('go');
+		let config = vscode.workspace.getConfiguration('m2');
 		let codeLensConfig = config.get('enableCodeLens');
 		let codelensEnabled = codeLensConfig ? codeLensConfig['runtest'] : false;
 		if (!codelensEnabled || !document.fileName.endsWith('_test.go')) {

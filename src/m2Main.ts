@@ -43,9 +43,9 @@ export let errorDiagnosticCollection: vscode.DiagnosticCollection;
 let warningDiagnosticCollection: vscode.DiagnosticCollection;
 
 export function activate(ctx: vscode.ExtensionContext): void {
-	let useLangServer = vscode.workspace.getConfiguration('go')['useLanguageServer'];
-	let langServerFlags: string[] = vscode.workspace.getConfiguration('go')['languageServerFlags'] || [];
-	let toolsGopath = vscode.workspace.getConfiguration('go')['toolsGopath'];
+	let useLangServer = vscode.workspace.getConfiguration('m2')['useLanguageServer'];
+	let langServerFlags: string[] = vscode.workspace.getConfiguration('m2')['languageServerFlags'] || [];
+	let toolsGopath = vscode.workspace.getConfiguration('m2')['toolsGopath'];
 
 	updateM2PathM2RootFromConfig().then(() => {
 		getMonkey2Version().then(currentVersion => {
@@ -70,7 +70,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 		offerToInstallTools();
 		let langServerAvailable = checkLanguageServer();
 		if (langServerAvailable) {
-			let langServerFlags: string[] = vscode.workspace.getConfiguration('go')['languageServerFlags'] || [];
+			let langServerFlags: string[] = vscode.workspace.getConfiguration('m2')['languageServerFlags'] || [];
 			// Language Server needs M2PATH to be in process.env
 			process.env['M2PATH'] = getCurrentMonkey2Path();
 			const c = new LanguageClient(
@@ -80,7 +80,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 					args: ['-mode=stdio', ...langServerFlags],
 				},
 				{
-					documentSelector: ['go'],
+					documentSelector: ['m2'],
 					uriConverters: {
 						// Apply file:/// scheme to all file paths.
 						code2Protocol: (uri: vscode.Uri): string => (uri.scheme ? uri : uri.with({ scheme: 'file' })).toString(),
@@ -101,7 +101,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 		}
 
 		if (vscode.window.activeTextEditor && isMonkey2PathSet()) {
-			runBuilds(vscode.window.activeTextEditor.document, vscode.workspace.getConfiguration('go'));
+			runBuilds(vscode.window.activeTextEditor.document, vscode.workspace.getConfiguration('m2'));
 		}
 	});
 
@@ -128,7 +128,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('go.gopath', () => {
 		let gopath = getCurrentMonkey2Path();
-		let wasInfered = vscode.workspace.getConfiguration('go')['inferGopath'];
+		let wasInfered = vscode.workspace.getConfiguration('m2')['inferGopath'];
 
 		// not only if it was configured, but if it was successful.
 		if (wasInfered && vscode.workspace.rootPath.indexOf(gopath) === 0) {
@@ -151,22 +151,22 @@ export function activate(ctx: vscode.ExtensionContext): void {
 	}));
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.cursor', (args) => {
-		let goConfig = vscode.workspace.getConfiguration('go');
+		let goConfig = vscode.workspace.getConfiguration('m2');
 		testAtCursor(goConfig, args);
 	}));
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.package', (args) => {
-		let goConfig = vscode.workspace.getConfiguration('go');
+		let goConfig = vscode.workspace.getConfiguration('m2');
 		testCurrentPackage(goConfig, args);
 	}));
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.file', (args) => {
-		let goConfig = vscode.workspace.getConfiguration('go');
+		let goConfig = vscode.workspace.getConfiguration('m2');
 		testCurrentFile(goConfig, args);
 	}));
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.workspace', (args) => {
-		let goConfig = vscode.workspace.getConfiguration('go');
+		let goConfig = vscode.workspace.getConfiguration('m2');
 		testWorkspace(goConfig, args);
 	}));
 
@@ -195,7 +195,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 	}));
 
 	ctx.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
-		let updatedGoConfig = vscode.workspace.getConfiguration('go');
+		let updatedGoConfig = vscode.workspace.getConfiguration('m2');
 		sendTelemetryEventForConfig(updatedGoConfig);
 		updateM2PathM2RootFromConfig();
 
@@ -238,13 +238,13 @@ export function activate(ctx: vscode.ExtensionContext): void {
 	ctx.subscriptions.push(vscode.commands.registerCommand('go.debug.startSession', config => {
 		if (!config.request) { // if 'request' is missing interpret this as a missing launch.json
 			let activeEditor = vscode.window.activeTextEditor;
-			if (!activeEditor || activeEditor.document.languageId !== 'go') {
+			if (!activeEditor || activeEditor.document.languageId !== 'm2') {
 				return;
 			}
 
 			config = Object.assign(config, {
 				'name': 'Launch',
-				'type': 'go',
+				'type': 'm2',
 				'request': 'launch',
 				'mode': 'debug',
 				'program': activeEditor.document.fileName,
@@ -273,7 +273,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 		wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
 	});
 
-	sendTelemetryEventForConfig(vscode.workspace.getConfiguration('go'));
+	sendTelemetryEventForConfig(vscode.workspace.getConfiguration('m2'));
 }
 
 function deactivate() {
@@ -289,7 +289,7 @@ function runBuilds(document: vscode.TextDocument, goConfig: vscode.WorkspaceConf
 		}
 	}
 
-	if (document.languageId !== 'go') {
+	if (document.languageId !== 'm2') {
 		return;
 	}
 
@@ -341,10 +341,10 @@ function startBuildOnSaveWatcher(subscriptions: vscode.Disposable[]) {
 	let ignoreNextSave = new WeakSet<vscode.TextDocument>();
 
 	vscode.workspace.onDidSaveTextDocument(document => {
-		if (document.languageId !== 'go' || ignoreNextSave.has(document)) {
+		if (document.languageId !== 'm2' || ignoreNextSave.has(document)) {
 			return;
 		}
-		let goConfig = vscode.workspace.getConfiguration('go');
+		let goConfig = vscode.workspace.getConfiguration('m2');
 		let textEditor = vscode.window.activeTextEditor;
 		let formatPromise: PromiseLike<void> = Promise.resolve();
 		if (goConfig['formatOnSave'] && textEditor.document === document) {

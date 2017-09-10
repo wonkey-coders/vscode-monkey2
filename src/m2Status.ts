@@ -8,7 +8,7 @@
 import { GO_MODE } from './m2Mode';
 import vscode = require('vscode');
 
-export let outputChannel = vscode.window.createOutputChannel('Go');
+export let outputChannel = vscode.window.createOutputChannel('Monkey2');
 
 let statusBarEntry: vscode.StatusBarItem;
 

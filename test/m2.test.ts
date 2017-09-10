@@ -119,14 +119,14 @@ suite('Go Extension Tests', () => {
 	}
 
 	test('Test Definition Provider using godoc', (done) => {
-		let config = Object.create(vscode.workspace.getConfiguration('go'), {
+		let config = Object.create(vscode.workspace.getConfiguration('m2'), {
 			'docsTool': { value: 'godoc' }
 		});
 		testDefinitionProvider(config).then(() => done(), done);
 	});
 
 	test('Test Definition Provider using gogetdoc', (done) => {
-		let config = Object.create(vscode.workspace.getConfiguration('go'), {
+		let config = Object.create(vscode.workspace.getConfiguration('m2'), {
 			'docsTool': { value: 'gogetdoc' }
 		});
 		getMonkey2Version().then(version => {
@@ -148,7 +148,7 @@ encountered.
 			[new vscode.Position(23, 7), 'print(txt string)', null, ['txt string']],
 			[new vscode.Position(41, 19), 'Hello(s string, exclaim bool) string', null, ['s string', 'exclaim bool']]
 		];
-		let config = Object.create(vscode.workspace.getConfiguration('go'), {
+		let config = Object.create(vscode.workspace.getConfiguration('m2'), {
 			'docsTool': { value: 'godoc' }
 		});
 		testSignatureHelpProvider(config, testCases).then(() => done(), done);
@@ -164,7 +164,7 @@ It returns the number of bytes written and any write error encountered.
 			[new vscode.Position(23, 7), 'print(txt string)', 'This is an unexported function so couldnt get this comment on hover :(\nNot anymore!! gogetdoc to the rescue\n', ['txt string']],
 			[new vscode.Position(41, 19), 'Hello(s string, exclaim bool) string', 'Hello is a method on the struct ABC. Will signature help understand this correctly\n', ['s string', 'exclaim bool']]
 		];
-		let config = Object.create(vscode.workspace.getConfiguration('go'), {
+		let config = Object.create(vscode.workspace.getConfiguration('m2'), {
 			'docsTool': { value: 'gogetdoc' }
 		});
 		getMonkey2Version().then(version => {
@@ -192,7 +192,7 @@ encountered.
 			[new vscode.Position(19, 6), 'Println func(a ...interface{}) (n int, err error)', printlnDoc],
 			[new vscode.Position(23, 4), 'print func(txt string)', null]
 		];
-		let config = Object.create(vscode.workspace.getConfiguration('go'), {
+		let config = Object.create(vscode.workspace.getConfiguration('m2'), {
 			'docsTool': { value: 'godoc' }
 		});
 		testHoverProvider(config, testCases).then(() => done(), done);
@@ -215,7 +215,7 @@ It returns the number of bytes written and any write error encountered.
 			[new vscode.Position(27, 14), 'type ABC struct {\n    a int\n    b int\n    c int\n}', 'ABC is a struct, you coudnt use Goto Definition or Hover info on this before\nNow you can due to gogetdoc\n'],
 			[new vscode.Position(28, 6), 'func CIDRMask(ones, bits int) IPMask', 'CIDRMask returns an IPMask consisting of `ones\' 1 bits\nfollowed by 0s up to a total length of `bits\' bits.\nFor a mask of this form, CIDRMask is the inverse of IPMask.Size.\n']
 		];
-		let config = Object.create(vscode.workspace.getConfiguration('go'), {
+		let config = Object.create(vscode.workspace.getConfiguration('m2'), {
 			'docsTool': { value: 'gogetdoc' }
 		});
 		getMonkey2Version().then(version => {
@@ -227,7 +227,7 @@ It returns the number of bytes written and any write error encountered.
 	});
 
 	test('Error checking', (done) => {
-		let config = Object.create(vscode.workspace.getConfiguration('go'), {
+		let config = Object.create(vscode.workspace.getConfiguration('m2'), {
 			'vetOnSave': { value: 'package' },
 			'vetFlags': { value: ['-all'] },
 			'lintTool': { value: 'golint' },
@@ -346,7 +346,7 @@ It returns the number of bytes written and any write error encountered.
 				return Promise.resolve();
 			}
 
-			let config = Object.create(vscode.workspace.getConfiguration('go'), {
+			let config = Object.create(vscode.workspace.getConfiguration('m2'), {
 				'lintTool': { value: 'gometalinter' },
 				'lintFlags': { value: ['--disable-all', '--enable=varcheck', '--enable=errcheck'] },
 				'vetOnSave': { value: 'off' },
@@ -462,7 +462,7 @@ It returns the number of bytes written and any write error encountered.
 	});
 
 	test('Test Env Variables are passed to Tests', (done) => {
-		let config = Object.create(vscode.workspace.getConfiguration('go'), {
+		let config = Object.create(vscode.workspace.getConfiguration('m2'), {
 			'testEnvVars': { value: { 'dummyEnvVar': 'dummyEnvValue' } }
 		});
 
@@ -538,7 +538,7 @@ It returns the number of bytes written and any write error encountered.
 		// will fail and will have to be replaced with any other go project with vendor packages
 
 		let vendorSupportPromise = isVendorSupported();
-		let filePath = path.join(process.env['M2PATH'], 'src', 'github.com', 'rogpeppe', 'godef', 'go', 'ast', 'ast.go');
+		let filePath = path.join(process.env['M2PATH'], 'src', 'github.com', 'rogpeppe', 'godef', 'm2', 'ast', 'ast.go');
 		let vendorPkgsFullPath = [
 			'github.com/rogpeppe/m2def/vendor/9fans.net/m2/acme',
 			'github.com/rogpeppe/m2def/vendor/9fans.net/m2/plan9',
@@ -648,14 +648,14 @@ It returns the number of bytes written and any write error encountered.
 		// will fail and will have to be replaced with any other go project with vendor packages
 
 		let workspacePath = path.join(process.env['M2PATH'], 'src', 'github.com', 'rogpeppe', 'godef');
-		let configWithoutIgnoringFolders = Object.create(vscode.workspace.getConfiguration('go'), {
+		let configWithoutIgnoringFolders = Object.create(vscode.workspace.getConfiguration('m2'), {
 			'gotoSymbol': {
 				value: {
 					'ignoreFolders': []
 				}
 			}
 		});
-		let configWithIgnoringFolders = Object.create(vscode.workspace.getConfiguration('go'), {
+		let configWithIgnoringFolders = Object.create(vscode.workspace.getConfiguration('m2'), {
 			'gotoSymbol': {
 				value: {
 					'ignoreFolders': ['vendor']
@@ -704,7 +704,7 @@ It returns the number of bytes written and any write error encountered.
 	});
 
 	test('Test Completion on unimported packages', (done) => {
-		let config = Object.create(vscode.workspace.getConfiguration('go'), {
+		let config = Object.create(vscode.workspace.getConfiguration('m2'), {
 			'autocompleteUnimportedPackages': { value: true }
 		});
 		let provider = new GoCompletionItemProvider();

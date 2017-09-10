@@ -17,7 +17,7 @@ let lastTestConfig: TestConfig;
 
 /**
 * Executes the unit test at the primary cursor using `go test`. Output
-* is sent to the 'Go' channel.
+* is sent to the 'Monkey2' channel.
 *
 * @param goConfig Configuration for the Go extension.
 */
