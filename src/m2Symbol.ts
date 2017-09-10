@@ -19,7 +19,7 @@ interface GoSymbolDeclaration {
 	character: number;
 }
 
-export class GoWorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
+export class Monkey2WorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider {
 
 	private goKindToCodeKind: { [key: string]: vscode.SymbolKind } = {
 		'package': vscode.SymbolKind.Package,

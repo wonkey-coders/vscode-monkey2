@@ -1,10 +1,6 @@
-language: go
+language: monkey2
 
-go:
-  - 1.5.x
-  - 1.6.x
-  - 1.7.x
-  - 1.8.x
+monkey2:
   - tip
 
 sudo: false
@@ -35,18 +31,6 @@ install:
   - npm install
   - npm run vscode:prepublish
   - go get -u -v github.com/nsf/gocode
-  - go get -u -v github.com/rogpeppe/godef
-  - if [[ "$(go version)" =~ "go version go1.5" ]]; then echo hello; else go get -u -v github.com/zmb3/gogetdoc; fi
-  - if [[ "$(go version)" =~ "go version go1.5" ]]; then echo cannot get golint; else go get -u -v github.com/golang/lint/golint; fi
-  - go get -u -v github.com/ramya-rao-a/go-outline
-  - go get -u -v sourcegraph.com/sqs/goreturns
-  - go get -u -v golang.org/x/tools/cmd/gorename
-  - go get -u -v github.com/tpng/gopkgs
-  - go get -u -v github.com/acroca/go-symbols
-  - go get -u -v github.com/alecthomas/gometalinter
-  - go get -u -v github.com/cweill/gotests/...
-  - GO15VENDOREXPERIMENT=1
-  - if [[ "$(go version)" =~ "go version go1.5" ]]; then echo skipping gometalinter; else gometalinter --install; fi
 
 script:
   - npm run lint

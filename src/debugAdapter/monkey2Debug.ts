@@ -210,13 +210,13 @@ class Delve {
 					}
 					dlvCwd = program;
 					isProgramDirectory = true;
-				} else if (mode !== 'exec' && extname(program) !== '.go') {
-					logError(`The program "${program}" must be a valid go file in debug mode`);
-					return reject('The program attribute must be a directory or .go file in debug mode');
+				} else if (mode !== 'exec' && extname(program) !== '.monkey2') {
+					logError(`The program "${program}" must be a valid monkey2 file in debug mode`);
+					return reject('The program attribute must be a directory or .monkey2 file in debug mode');
 				}
 			} catch (e) {
 				logError(`The program "${program}" does not exist: ${e}`);
-				return reject('The program attribute must point to valid directory, .go file or executable.');
+				return reject('The program attribute must point to valid directory, .monkey2 file or executable.');
 			}
 
 			// read env from disk and merge into env variables
@@ -400,7 +400,7 @@ class GoDebugSession extends DebugSession {
 		this.delve = null;
 		this.breakpoints = new Map<string, DebugBreakpoint[]>();
 
-		const logPath = path.join(os.tmpdir(), 'vscode-go-debug.txt');
+		const logPath = path.join(os.tmpdir(), 'vscode-monkey2-debug.txt');
 		logger.init(e => this.sendEvent(e), logPath, isServer);
 	}
 

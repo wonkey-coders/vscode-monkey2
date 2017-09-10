@@ -36,7 +36,7 @@ export function parseLiveFile(e: vscode.TextDocumentChangeEvent) {
 	if (e.document.isUntitled) {
 		return;
 	}
-	if (e.document.languageId !== 'm2') {
+	if (e.document.languageId !== 'monkey2') {
 		return;
 	}
 	if (!goLiveErrorsEnabled()) {

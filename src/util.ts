@@ -15,8 +15,9 @@ const extensionVersion: string = vscode.extensions.getExtension(extensionId).pac
 const aiKey: string = 'AIF-56fe259a-f869-438a-9eff-928c454c1ec4';
 
 export const monkey2Keywords: string[] = [
-	'#Import',
-	'Extern'
+	'End',
+	'Funcion',
+	'Print'
 ];
 
 export interface SemVersion {

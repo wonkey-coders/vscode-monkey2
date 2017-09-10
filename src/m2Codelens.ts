@@ -17,7 +17,7 @@ class ReferencesCodeLens extends CodeLens {
 	}
 }
 
-export class GoCodeLensProvider implements CodeLensProvider {
+export class Monkey2LensProvider implements CodeLensProvider {
 	public provideCodeLenses(document: TextDocument, token: CancellationToken): CodeLens[] | Thenable<CodeLens[]> {
 		let codeLensConfig = vscode.workspace.getConfiguration('m2').get('enableCodeLens');
 		let codelensEnabled = codeLensConfig ? codeLensConfig['references'] : false;

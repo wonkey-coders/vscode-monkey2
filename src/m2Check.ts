@@ -185,8 +185,8 @@ export function check(filename: string, m2Config: vscode.WorkspaceConfiguration)
 			runningToolsPromises.push(outerBuildPromise);
 		} else {
 			// Find the right importPath instead of directly using `.`. Fixes https://github.com/Microsoft/vscode-go/issues/846
-			let currentGoWorkspace = getCurrentWorkspaceFromM2PATH(getCurrentMonkey2Path(), cwd);
-			let importPath = currentGoWorkspace ? cwd.substr(currentGoWorkspace.length + 1) : '.';
+			let currentWorkspace = getCurrentWorkspaceFromM2PATH(getCurrentMonkey2Path(), cwd);
+			let importPath = currentWorkspace ? cwd.substr(currentWorkspace.length + 1) : '.';
 
 			runningToolsPromises.push(runTool(
 				buildArgs.concat(importPath),

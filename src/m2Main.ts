@@ -16,7 +16,7 @@ import { GoRenameProvider } from './m2Rename';
 import { GoDocumentSymbolProvider } from './m2Outline';
 import { GoRunTestCodeLensProvider } from './m2RunTestCodelens';
 import { GoSignatureHelpProvider } from './m2Signature';
-import { GoWorkspaceSymbolProvider } from './m2Symbol';
+import { Monkey2WorkspaceSymbolProvider } from './m2Symbol';
 import { GoCodeActionProvider } from './m2CodeAction';
 import { check, ICheckResult, removeTestStatus } from './m2Check';
 import { updateM2PathM2RootFromConfig, offerToInstallTools } from './m2InstallTools';
@@ -34,7 +34,7 @@ import { LanguageClient } from 'vscode-languageclient';
 import { clearCacheForTools } from './m2Path';
 import { addTags, removeTags } from './m2Modifytags';
 import { parseLiveFile } from './m2LiveErrors';
-import { GoCodeLensProvider } from './m2Codelens';
+import { Monkey2LensProvider } from './m2Codelens';
 import { implCursor } from './m2Impl';
 import { monkey2ListModules } from './m2Packages';
 import { browsePackages } from './m2BrowsePackage';
@@ -96,7 +96,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 			ctx.subscriptions.push(vscode.languages.registerReferenceProvider(MONKEY2_FILE_FILTER, new GoReferenceProvider()));
 			ctx.subscriptions.push(vscode.languages.registerImplementationProvider(MONKEY2_FILE_FILTER, new Monkey2ImplementationProvider()));
 			ctx.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(MONKEY2_FILE_FILTER, new GoDocumentSymbolProvider()));
-			ctx.subscriptions.push(vscode.languages.registerWorkspaceSymbolProvider(new GoWorkspaceSymbolProvider()));
+			ctx.subscriptions.push(vscode.languages.registerWorkspaceSymbolProvider(new Monkey2WorkspaceSymbolProvider()));
 			ctx.subscriptions.push(vscode.languages.registerSignatureHelpProvider(MONKEY2_FILE_FILTER, new GoSignatureHelpProvider(), '(', ','));
 		}
 
@@ -112,7 +112,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 	ctx.subscriptions.push(vscode.languages.registerRenameProvider(MONKEY2_FILE_FILTER, new GoRenameProvider()));
 	ctx.subscriptions.push(vscode.languages.registerCodeActionsProvider(MONKEY2_FILE_FILTER, new GoCodeActionProvider()));
 	ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(MONKEY2_FILE_FILTER, new GoRunTestCodeLensProvider()));
-	ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(MONKEY2_FILE_FILTER, new GoCodeLensProvider()));
+	ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(MONKEY2_FILE_FILTER, new Monkey2LensProvider()));
 
 	errorDiagnosticCollection = vscode.languages.createDiagnosticCollection('go-error');
 	ctx.subscriptions.push(errorDiagnosticCollection);
@@ -289,7 +289,7 @@ function runBuilds(document: vscode.TextDocument, m2Config: vscode.WorkspaceConf
 		}
 	}
 
-	if (document.languageId !== 'm2') {
+	if (document.languageId !== 'monkey2') {
 		return;
 	}
 
@@ -341,7 +341,7 @@ function startBuildOnSaveWatcher(subscriptions: vscode.Disposable[]) {
 	let ignoreNextSave = new WeakSet<vscode.TextDocument>();
 
 	vscode.workspace.onDidSaveTextDocument(document => {
-		if (document.languageId !== 'm2' || ignoreNextSave.has(document)) {
+		if (document.languageId !== 'monkey2' || ignoreNextSave.has(document)) {
 			return;
 		}
 		let m2Config = vscode.workspace.getConfiguration('m2');

@@ -28,7 +28,7 @@ export function definitionLocation(document: vscode.TextDocument, position: vsco
 	let wordRange = document.getWordRangeAtPosition(position);
 	let lineText = document.lineAt(position.line).text;
 	let word = wordRange ? document.getText(wordRange) : '';
-	if (!wordRange || lineText.startsWith('//') || isPositionInString(document, position) || word.match(/^\d+.?\d+$/) || monkey2Keywords.indexOf(word) > 0) {
+	if (!wordRange || lineText.startsWith('\'') || isPositionInString(document, position) || word.match(/^\d+.?\d+$/) || monkey2Keywords.indexOf(word) > 0) {
 		return Promise.resolve(null);
 	}
 	if (!m2Config) {

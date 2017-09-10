@@ -18,7 +18,7 @@
     "color": "#CFB69A",
     "theme": "light"
   },
-  "private": true,
+  "private": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/nitrologic/vscode-monkey2.git"
@@ -173,14 +173,14 @@
     ],
     "debuggers": [
       {
-        "type": "m2",
+        "type": "monkey2",
         "label": "Monkey2",
         "enableBreakpointsFor": {
           "languageIds": [
             "monkey2"
           ]
         },
-        "program": "./out/src/debugAdapter/goDebug.js",
+        "program": "./out/src/debugAdapter/monkey2Debug.js",
         "runtime": "node",
         "languages": [
           "monkey2"
