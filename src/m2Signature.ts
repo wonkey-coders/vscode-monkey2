@@ -12,12 +12,12 @@ import { definitionLocation } from './m2Declaration';
 import { parameters } from './util';
 
 export class GoSignatureHelpProvider implements SignatureHelpProvider {
-	private goConfig = null;
+	private m2Config = null;
 
-	constructor(goConfig?: WorkspaceConfiguration) {
-		this.goConfig = goConfig;
-		if (!this.goConfig) {
-			this.goConfig = vscode.workspace.getConfiguration('m2');
+	constructor(m2Config?: WorkspaceConfiguration) {
+		this.m2Config = m2Config;
+		if (!this.m2Config) {
+			this.m2Config = vscode.workspace.getConfiguration('m2');
 		}
 	}
 
@@ -28,11 +28,11 @@ export class GoSignatureHelpProvider implements SignatureHelpProvider {
 		}
 		let callerPos = this.previousTokenPosition(document, theCall.openParen);
 		// Temporary fix to fall back to godoc if guru is the set docsTool
-		let goConfig = this.goConfig;
-		if (goConfig['docsTool'] === 'guru') {
-			goConfig = Object.assign({}, goConfig, {'docsTool': 'godoc'});
+		let m2Config = this.m2Config;
+		if (m2Config['docsTool'] === 'guru') {
+			m2Config = Object.assign({}, m2Config, {'docsTool': 'godoc'});
 		}
-		return definitionLocation(document, callerPos, goConfig).then(res => {
+		return definitionLocation(document, callerPos, m2Config).then(res => {
 			if (!res) {
 				// The definition was not found
 				return null;

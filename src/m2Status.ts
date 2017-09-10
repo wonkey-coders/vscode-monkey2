@@ -5,7 +5,7 @@
 
 'use strict';
 
-import { GO_MODE } from './m2Mode';
+import { MONKEY2_FILE_FILTER } from './m2Mode';
 import vscode = require('vscode');
 
 export let outputChannel = vscode.window.createOutputChannel('Monkey2');
@@ -20,7 +20,7 @@ export function showHideStatus() {
 		statusBarEntry.hide();
 		return;
 	}
-	if (vscode.languages.match(GO_MODE, vscode.window.activeTextEditor.document)) {
+	if (vscode.languages.match(MONKEY2_FILE_FILTER, vscode.window.activeTextEditor.document)) {
 		statusBarEntry.show();
 		return;
 	}

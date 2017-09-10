@@ -16,18 +16,18 @@ interface GoLiveErrorsConfig {
 let runner;
 
 export function goLiveErrorsEnabled() {
-	let goConfig = <GoLiveErrorsConfig>vscode.workspace.getConfiguration('m2')['liveErrors'];
-	if (goConfig === null || goConfig === undefined || !goConfig.enabled) {
+	let m2Config = <GoLiveErrorsConfig>vscode.workspace.getConfiguration('m2')['liveErrors'];
+	if (m2Config === null || m2Config === undefined || !m2Config.enabled) {
 		return false;
 	}
 	let files = vscode.workspace.getConfiguration('files');
 	let autoSave = files['autoSave'];
 	let autoSaveDelay = files['autoSaveDelay'];
 	if (autoSave !== null && autoSave !== undefined &&
-			autoSave === 'afterDelay' && autoSaveDelay < goConfig.delay * 1.5) {
+			autoSave === 'afterDelay' && autoSaveDelay < m2Config.delay * 1.5) {
 		return false;
 	}
-	return goConfig.enabled;
+	return m2Config.enabled;
 }
 
 // parseLiveFile runs the gotype command in live mode to check for any syntactic or

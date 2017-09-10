@@ -1,5 +1,5 @@
 {
-	".source.go": {
+	".source.monkey2": {
 		"single import": {
 			"prefix": "im",
 			"body": "import \"${1:package}\""

@@ -56,11 +56,11 @@ export class GoWorkspaceSymbolProvider implements vscode.WorkspaceSymbolProvider
 	}
 }
 
-export function getWorkspaceSymbols(workspacePath: string, query: string, goConfig?: vscode.WorkspaceConfiguration, ignoreFolderFeatureOn: boolean = true): Thenable<GoSymbolDeclaration[]> {
-		if (!goConfig) {
-			goConfig = vscode.workspace.getConfiguration('m2');
+export function getWorkspaceSymbols(workspacePath: string, query: string, m2Config?: vscode.WorkspaceConfiguration, ignoreFolderFeatureOn: boolean = true): Thenable<GoSymbolDeclaration[]> {
+		if (!m2Config) {
+			m2Config = vscode.workspace.getConfiguration('m2');
 		}
-		let gotoSymbolConfig = goConfig['gotoSymbol'];
+		let gotoSymbolConfig = m2Config['gotoSymbol'];
 		let ignoreFolders: string[] = gotoSymbolConfig ? gotoSymbolConfig['ignoreFolders'] : [];
 		let args = (ignoreFolderFeatureOn && ignoreFolders && ignoreFolders.length > 0) ? ['-ignore', ignoreFolders.join(',')] : [];
 		args.push(workspacePath);
@@ -75,7 +75,7 @@ export function getWorkspaceSymbols(workspacePath: string, query: string, goConf
 					}
 					if (err && stderr && stderr.startsWith('flag provided but not defined: -ignore')) {
 						promptForUpdatingTool('go-symbols');
-						return getWorkspaceSymbols(workspacePath, query, goConfig, false).then(results => {
+						return getWorkspaceSymbols(workspacePath, query, m2Config, false).then(results => {
 							return resolve(results);
 						});
 					}

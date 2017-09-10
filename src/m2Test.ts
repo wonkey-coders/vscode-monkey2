@@ -19,9 +19,9 @@ let lastTestConfig: TestConfig;
 * Executes the unit test at the primary cursor using `go test`. Output
 * is sent to the 'Monkey2' channel.
 *
-* @param goConfig Configuration for the Go extension.
+* @param m2Config Configuration for the Go extension.
 */
-export function testAtCursor(goConfig: vscode.WorkspaceConfiguration, args: any) {
+export function testAtCursor(m2Config: vscode.WorkspaceConfiguration, args: any) {
 	let editor = vscode.window.activeTextEditor;
 	if (!editor) {
 		vscode.window.showInformationMessage('No editor is active.');
@@ -58,9 +58,9 @@ export function testAtCursor(goConfig: vscode.WorkspaceConfiguration, args: any)
 		}
 
 		const testConfig = {
-			goConfig: goConfig,
+			m2Config: m2Config,
 			dir: path.dirname(editor.document.fileName),
-			flags: getTestFlags(goConfig, args),
+			flags: getTestFlags(m2Config, args),
 			functions: [testFunctionName]
 		};
 		// Remember this config as the last executed test.
@@ -75,9 +75,9 @@ export function testAtCursor(goConfig: vscode.WorkspaceConfiguration, args: any)
 /**
  * Runs all tests in the package of the source of the active editor.
  *
- * @param goConfig Configuration for the Go extension.
+ * @param m2Config Configuration for the Go extension.
  */
-export function testCurrentPackage(goConfig: vscode.WorkspaceConfiguration, args: any) {
+export function testCurrentPackage(m2Config: vscode.WorkspaceConfiguration, args: any) {
 	let editor = vscode.window.activeTextEditor;
 	if (!editor) {
 		vscode.window.showInformationMessage('No editor is active.');
@@ -85,14 +85,14 @@ export function testCurrentPackage(goConfig: vscode.WorkspaceConfiguration, args
 	}
 
 	let tmpCoverPath = '';
-	let testFlags = getTestFlags(goConfig, args) || [];
-	if (goConfig['coverOnTestPackage'] === true) {
+	let testFlags = getTestFlags(m2Config, args) || [];
+	if (m2Config['coverOnTestPackage'] === true) {
 		tmpCoverPath = path.normalize(path.join(os.tmpdir(), 'go-code-cover'));
 		testFlags.push('-coverprofile=' + tmpCoverPath);
 	}
 
 	const testConfig = {
-		goConfig: goConfig,
+		m2Config: m2Config,
 		dir: path.dirname(editor.document.fileName),
 		flags: testFlags,
 		showTestCoverage: true
@@ -112,13 +112,13 @@ export function testCurrentPackage(goConfig: vscode.WorkspaceConfiguration, args
 /**
  * Runs all tests from all directories in the workspace.
  *
- * @param goConfig Configuration for the Go extension.
+ * @param m2Config Configuration for the Go extension.
  */
-export function testWorkspace(goConfig: vscode.WorkspaceConfiguration, args: any) {
+export function testWorkspace(m2Config: vscode.WorkspaceConfiguration, args: any) {
 	const testConfig = {
-		goConfig: goConfig,
+		m2Config: m2Config,
 		dir: vscode.workspace.rootPath,
-		flags: getTestFlags(goConfig, args),
+		flags: getTestFlags(m2Config, args),
 		includeSubDirectories: true
 	};
 	// Remember this config as the last executed test.
@@ -132,9 +132,9 @@ export function testWorkspace(goConfig: vscode.WorkspaceConfiguration, args: any
 /**
  * Runs all tests in the source of the active editor.
  *
- * @param goConfig Configuration for the Go extension.
+ * @param m2Config Configuration for the Go extension.
  */
-export function testCurrentFile(goConfig: vscode.WorkspaceConfiguration, args: string[]): Thenable<boolean> {
+export function testCurrentFile(m2Config: vscode.WorkspaceConfiguration, args: string[]): Thenable<boolean> {
 	let editor = vscode.window.activeTextEditor;
 	if (!editor) {
 		vscode.window.showInformationMessage('No editor is active.');
@@ -147,9 +147,9 @@ export function testCurrentFile(goConfig: vscode.WorkspaceConfiguration, args: s
 
 	return getTestFunctions(editor.document).then(testFunctions => {
 		const testConfig = {
-			goConfig: goConfig,
+			m2Config: m2Config,
 			dir: path.dirname(editor.document.fileName),
-			flags: getTestFlags(goConfig, args),
+			flags: getTestFlags(m2Config, args),
 			functions: testFunctions.map(func => { return func.name; })
 		};
 		// Remember this config as the last executed test.

@@ -26,9 +26,9 @@ export interface TestConfig {
 	/**
 	 * Configuration for the Go extension
 	 */
-	goConfig: vscode.WorkspaceConfiguration;
+	m2Config: vscode.WorkspaceConfiguration;
 	/**
-	 * Test flags to override the testFlags and buildFlags from goConfig.
+	 * Test flags to override the testFlags and buildFlags from m2Config.
 	 */
 	flags: string[];
 	/**
@@ -63,8 +63,8 @@ export function getTestEnvVars(config: vscode.WorkspaceConfiguration): any {
 	return Object.assign({}, toolsEnv, fileEnv, testEnv);
 }
 
-export function getTestFlags(goConfig: vscode.WorkspaceConfiguration, args: any): string[] {
-	let testFlags: string[] = goConfig['testFlags'] ? goConfig['testFlags'] : goConfig['buildFlags'];
+export function getTestFlags(m2Config: vscode.WorkspaceConfiguration, args: any): string[] {
+	let testFlags: string[] = m2Config['testFlags'] ? m2Config['testFlags'] : m2Config['buildFlags'];
 	testFlags = [...testFlags]; // Use copy of the flags, dont pass the actual object from config
 	return (args && args.hasOwnProperty('flags') && Array.isArray(args['flags'])) ? args['flags'] : testFlags;
 }
@@ -100,7 +100,7 @@ function hasTestFunctionPrefix(name: string): boolean {
 /**
  * Runs go test and presents the output in the 'Monkey2' channel.
  *
- * @param goConfig Configuration for the Go extension.
+ * @param m2Config Configuration for the Go extension.
  */
 export function goTest(testconfig: TestConfig): Thenable<boolean> {
 	return new Promise<boolean>((resolve, reject) => {
@@ -110,13 +110,13 @@ export function goTest(testconfig: TestConfig): Thenable<boolean> {
 			outputChannel.show(true);
 		}
 
-		let buildTags: string = testconfig.goConfig['buildTags'];
-		let args = ['test', ...testconfig.flags, '-timeout', testconfig.goConfig['testTimeout']];
+		let buildTags: string = testconfig.m2Config['buildTags'];
+		let args = ['test', ...testconfig.flags, '-timeout', testconfig.m2Config['testTimeout']];
 		if (buildTags && testconfig.flags.indexOf('-tags') === -1) {
 			args.push('-tags');
 			args.push(buildTags);
 		}
-		let testEnvVars = getTestEnvVars(testconfig.goConfig);
+		let testEnvVars = getTestEnvVars(testconfig.m2Config);
 		let m2RuntimePath = getMonkey2RuntimePath();
 
 		if (!m2RuntimePath) {

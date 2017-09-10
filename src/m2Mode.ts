@@ -7,4 +7,4 @@
 
 import vscode = require('vscode');
 
-export const GO_MODE: vscode.DocumentFilter = { language: 'm2', scheme: 'file' };
+export const MONKEY2_FILE_FILTER: vscode.DocumentFilter = { language: 'monkey2', scheme: 'file' };

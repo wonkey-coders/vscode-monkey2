@@ -10,22 +10,22 @@ import { HoverProvider, Hover, MarkedString, TextDocument, Position, Cancellatio
 import { definitionLocation } from './m2Declaration';
 
 export class GoHoverProvider implements HoverProvider {
-	private goConfig = null;
+	private m2Config = null;
 
-	constructor(goConfig?: WorkspaceConfiguration) {
-		this.goConfig = goConfig;
-		if (!this.goConfig) {
-			this.goConfig = vscode.workspace.getConfiguration('m2');
+	constructor(m2Config?: WorkspaceConfiguration) {
+		this.m2Config = m2Config;
+		if (!this.m2Config) {
+			this.m2Config = vscode.workspace.getConfiguration('m2');
 		}
 	}
 
 	public provideHover(document: TextDocument, position: Position, token: CancellationToken): Thenable<Hover> {
-		let goConfig = this.goConfig;
+		let m2Config = this.m2Config;
 		// Temporary fix to fall back to godoc if guru is the set docsTool
-		if (goConfig['docsTool'] === 'guru') {
-			goConfig = Object.assign({}, goConfig, {'docsTool': 'godoc'});
+		if (m2Config['docsTool'] === 'guru') {
+			m2Config = Object.assign({}, m2Config, {'docsTool': 'godoc'});
 		}
-		return definitionLocation(document, position, goConfig, true).then(definitionInfo => {
+		return definitionLocation(document, position, m2Config, true).then(definitionInfo => {
 			if (definitionInfo == null) return null;
 			let lines = definitionInfo.declarationlines
 				.filter(line => !line.startsWith('\t//') && line !== '')

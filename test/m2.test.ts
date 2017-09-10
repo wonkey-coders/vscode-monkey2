@@ -10,7 +10,7 @@ import * as vscode from 'vscode';
 import { GoHoverProvider } from '../src/m2ExtraInfo';
 import { GoCompletionItemProvider } from '../src/m2Suggest';
 import { GoSignatureHelpProvider } from '../src/m2Signature';
-import { GoDefinitionProvider } from '../src/m2Declaration';
+import { Monkey2DefinitionProvider } from '../src/m2Declaration';
 import { getWorkspaceSymbols } from '../src/m2Symbol';
 import { check } from '../src/m2Check';
 import cp = require('child_process');
@@ -53,8 +53,8 @@ suite('Go Extension Tests', () => {
 		fs.removeSync(repoPath);
 	});
 
-	function testDefinitionProvider(goConfig: vscode.WorkspaceConfiguration): Thenable<any> {
-		let provider = new GoDefinitionProvider(goConfig);
+	function testDefinitionProvider(m2Config: vscode.WorkspaceConfiguration): Thenable<any> {
+		let provider = new Monkey2DefinitionProvider(m2Config);
 		let uri = vscode.Uri.file(path.join(fixturePath, 'test.go'));
 		let position = new vscode.Position(10, 3);
 		return vscode.workspace.openTextDocument(uri).then((textDocument) => {
@@ -69,8 +69,8 @@ suite('Go Extension Tests', () => {
 		});
 	}
 
-	function testSignatureHelpProvider(goConfig: vscode.WorkspaceConfiguration, testCases: [vscode.Position, string, string, string[]][]): Thenable<any> {
-		let provider = new GoSignatureHelpProvider(goConfig);
+	function testSignatureHelpProvider(m2Config: vscode.WorkspaceConfiguration, testCases: [vscode.Position, string, string, string[]][]): Thenable<any> {
+		let provider = new GoSignatureHelpProvider(m2Config);
 		let uri = vscode.Uri.file(path.join(fixturePath, 'gogetdocTestData', 'test.go'));
 		return vscode.workspace.openTextDocument(uri).then((textDocument) => {
 			let promises = testCases.map(([position, expected, expectedDoc, expectedParams]) =>
@@ -91,8 +91,8 @@ suite('Go Extension Tests', () => {
 		});
 	}
 
-	function testHoverProvider(goConfig: vscode.WorkspaceConfiguration, testCases: [vscode.Position, string, string][]): Thenable<any> {
-		let provider = new GoHoverProvider(goConfig);
+	function testHoverProvider(m2Config: vscode.WorkspaceConfiguration, testCases: [vscode.Position, string, string][]): Thenable<any> {
+		let provider = new GoHoverProvider(m2Config);
 		let uri = vscode.Uri.file(path.join(fixturePath, 'gogetdocTestData', 'test.go'));
 		return vscode.workspace.openTextDocument(uri).then((textDocument) => {
 			let promises = testCases.map(([position, expectedSignature, expectedDocumentation]) =>

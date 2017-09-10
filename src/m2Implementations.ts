@@ -26,7 +26,7 @@ interface GuruImplementsOutput {
 	from: GuruImplementsRef[];
 }
 
-export class GoImplementationProvider implements vscode.ImplementationProvider {
+export class Monkey2ImplementationProvider implements vscode.ImplementationProvider {
 	public provideImplementation(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.Definition> {
 		return new Promise<vscode.Definition>((resolve, reject) => {
 			if (token.isCancellationRequested) {

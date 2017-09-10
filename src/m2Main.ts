@@ -8,9 +8,9 @@
 import vscode = require('vscode');
 import { GoCompletionItemProvider } from './m2Suggest';
 import { GoHoverProvider } from './m2ExtraInfo';
-import { GoDefinitionProvider } from './m2Declaration';
+import { Monkey2DefinitionProvider } from './m2Declaration';
 import { GoReferenceProvider } from './m2References';
-import { GoImplementationProvider } from './m2Implementations';
+import { Monkey2ImplementationProvider } from './m2Implementations';
 import { GoDocumentFormattingEditProvider, Formatter } from './m2Format';
 import { GoRenameProvider } from './m2Rename';
 import { GoDocumentSymbolProvider } from './m2Outline';
@@ -20,7 +20,7 @@ import { GoWorkspaceSymbolProvider } from './m2Symbol';
 import { GoCodeActionProvider } from './m2CodeAction';
 import { check, ICheckResult, removeTestStatus } from './m2Check';
 import { updateM2PathM2RootFromConfig, offerToInstallTools } from './m2InstallTools';
-import { GO_MODE } from './m2Mode';
+import { MONKEY2_FILE_FILTER } from './m2Mode';
 import { showHideStatus } from './m2Status';
 import { toggleCoverageCurrentPackage, getCodeCoverage, removeCodeCoverage } from './m2Cover';
 import { initGoCover } from './m2Cover';
@@ -91,13 +91,13 @@ export function activate(ctx: vscode.ExtensionContext): void {
 
 			ctx.subscriptions.push(c.start());
 		} else {
-			ctx.subscriptions.push(vscode.languages.registerHoverProvider(GO_MODE, new GoHoverProvider()));
-			ctx.subscriptions.push(vscode.languages.registerDefinitionProvider(GO_MODE, new GoDefinitionProvider()));
-			ctx.subscriptions.push(vscode.languages.registerReferenceProvider(GO_MODE, new GoReferenceProvider()));
-			ctx.subscriptions.push(vscode.languages.registerImplementationProvider(GO_MODE, new GoImplementationProvider()));
-			ctx.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(GO_MODE, new GoDocumentSymbolProvider()));
+			ctx.subscriptions.push(vscode.languages.registerHoverProvider(MONKEY2_FILE_FILTER, new GoHoverProvider()));
+			ctx.subscriptions.push(vscode.languages.registerDefinitionProvider(MONKEY2_FILE_FILTER, new Monkey2DefinitionProvider()));
+			ctx.subscriptions.push(vscode.languages.registerReferenceProvider(MONKEY2_FILE_FILTER, new GoReferenceProvider()));
+			ctx.subscriptions.push(vscode.languages.registerImplementationProvider(MONKEY2_FILE_FILTER, new Monkey2ImplementationProvider()));
+			ctx.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(MONKEY2_FILE_FILTER, new GoDocumentSymbolProvider()));
 			ctx.subscriptions.push(vscode.languages.registerWorkspaceSymbolProvider(new GoWorkspaceSymbolProvider()));
-			ctx.subscriptions.push(vscode.languages.registerSignatureHelpProvider(GO_MODE, new GoSignatureHelpProvider(), '(', ','));
+			ctx.subscriptions.push(vscode.languages.registerSignatureHelpProvider(MONKEY2_FILE_FILTER, new GoSignatureHelpProvider(), '(', ','));
 		}
 
 		if (vscode.window.activeTextEditor && isMonkey2PathSet()) {
@@ -107,12 +107,12 @@ export function activate(ctx: vscode.ExtensionContext): void {
 
 	initGoCover(ctx);
 
-	ctx.subscriptions.push(vscode.languages.registerCompletionItemProvider(GO_MODE, new GoCompletionItemProvider(), '.', '\"'));
-	ctx.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(GO_MODE, new GoDocumentFormattingEditProvider()));
-	ctx.subscriptions.push(vscode.languages.registerRenameProvider(GO_MODE, new GoRenameProvider()));
-	ctx.subscriptions.push(vscode.languages.registerCodeActionsProvider(GO_MODE, new GoCodeActionProvider()));
-	ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(GO_MODE, new GoRunTestCodeLensProvider()));
-	ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(GO_MODE, new GoCodeLensProvider()));
+	ctx.subscriptions.push(vscode.languages.registerCompletionItemProvider(MONKEY2_FILE_FILTER, new GoCompletionItemProvider(), '.', '\"'));
+	ctx.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(MONKEY2_FILE_FILTER, new GoDocumentFormattingEditProvider()));
+	ctx.subscriptions.push(vscode.languages.registerRenameProvider(MONKEY2_FILE_FILTER, new GoRenameProvider()));
+	ctx.subscriptions.push(vscode.languages.registerCodeActionsProvider(MONKEY2_FILE_FILTER, new GoCodeActionProvider()));
+	ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(MONKEY2_FILE_FILTER, new GoRunTestCodeLensProvider()));
+	ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(MONKEY2_FILE_FILTER, new GoCodeLensProvider()));
 
 	errorDiagnosticCollection = vscode.languages.createDiagnosticCollection('go-error');
 	ctx.subscriptions.push(errorDiagnosticCollection);
@@ -151,23 +151,23 @@ export function activate(ctx: vscode.ExtensionContext): void {
 	}));
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.cursor', (args) => {
-		let goConfig = vscode.workspace.getConfiguration('m2');
-		testAtCursor(goConfig, args);
+		let m2Config = vscode.workspace.getConfiguration('m2');
+		testAtCursor(m2Config, args);
 	}));
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.package', (args) => {
-		let goConfig = vscode.workspace.getConfiguration('m2');
-		testCurrentPackage(goConfig, args);
+		let m2Config = vscode.workspace.getConfiguration('m2');
+		testCurrentPackage(m2Config, args);
 	}));
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.file', (args) => {
-		let goConfig = vscode.workspace.getConfiguration('m2');
-		testCurrentFile(goConfig, args);
+		let m2Config = vscode.workspace.getConfiguration('m2');
+		testCurrentFile(m2Config, args);
 	}));
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.workspace', (args) => {
-		let goConfig = vscode.workspace.getConfiguration('m2');
-		testWorkspace(goConfig, args);
+		let m2Config = vscode.workspace.getConfiguration('m2');
+		testWorkspace(m2Config, args);
 	}));
 
 	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.previous', () => {
@@ -265,7 +265,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 		});
 	}));
 
-	vscode.languages.setLanguageConfiguration(GO_MODE.language, {
+	vscode.languages.setLanguageConfiguration(MONKEY2_FILE_FILTER.language, {
 		indentationRules: {
 			decreaseIndentPattern: /^\s*(\bcase\b.*:|\bdefault\b:|}[),]?|\)[,]?)$/,
 			increaseIndentPattern: /^.*(\bcase\b.*:|\bdefault\b:|(\b(func|if|else|switch|select|for|struct)\b.*)?{[^}]*|\([^)]*)$/
@@ -279,7 +279,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 function deactivate() {
 }
 
-function runBuilds(document: vscode.TextDocument, goConfig: vscode.WorkspaceConfiguration) {
+function runBuilds(document: vscode.TextDocument, m2Config: vscode.WorkspaceConfiguration) {
 
 	function mapSeverityToVSCodeSeverity(sev: string) {
 		switch (sev) {
@@ -294,7 +294,7 @@ function runBuilds(document: vscode.TextDocument, goConfig: vscode.WorkspaceConf
 	}
 
 	let uri = document.uri;
-	check(uri.fsPath, goConfig).then(errors => {
+	check(uri.fsPath, m2Config).then(errors => {
 		errorDiagnosticCollection.clear();
 		warningDiagnosticCollection.clear();
 
@@ -344,10 +344,10 @@ function startBuildOnSaveWatcher(subscriptions: vscode.Disposable[]) {
 		if (document.languageId !== 'm2' || ignoreNextSave.has(document)) {
 			return;
 		}
-		let goConfig = vscode.workspace.getConfiguration('m2');
+		let m2Config = vscode.workspace.getConfiguration('m2');
 		let textEditor = vscode.window.activeTextEditor;
 		let formatPromise: PromiseLike<void> = Promise.resolve();
-		if (goConfig['formatOnSave'] && textEditor.document === document) {
+		if (m2Config['formatOnSave'] && textEditor.document === document) {
 			let formatter = new Formatter();
 			formatPromise = formatter.formatDocument(document).then(edits => {
 				let workspaceEdit = new vscode.WorkspaceEdit();
@@ -365,47 +365,47 @@ function startBuildOnSaveWatcher(subscriptions: vscode.Disposable[]) {
 			});
 		}
 		formatPromise.then(() => {
-			runBuilds(document, goConfig);
+			runBuilds(document, m2Config);
 		});
 	}, null, subscriptions);
 
 }
 
-function sendTelemetryEventForConfig(goConfig: vscode.WorkspaceConfiguration) {
-	sendTelemetryEvent('goConfig', {
-		buildOnSave: goConfig['buildOnSave'] + '',
-		buildFlags: goConfig['buildFlags'],
-		buildTags: goConfig['buildTags'],
-		formatOnSave: goConfig['formatOnSave'] + '',
-		formatTool: goConfig['formatTool'],
-		formatFlags: goConfig['formatFlags'],
-		lintOnSave: goConfig['lintOnSave'] + '',
-		lintFlags: goConfig['lintFlags'],
-		lintTool: goConfig['lintTool'],
-		vetOnSave: goConfig['vetOnSave'] + '',
-		vetFlags: goConfig['vetFlags'],
-		testOnSave: goConfig['testOnSave'] + '',
-		testFlags: goConfig['testFlags'],
-		coverOnSave: goConfig['coverOnSave'] + '',
-		coverOnTestPackage: goConfig['coverOnTestPackage'] + '',
-		coverageDecorator: goConfig['coverageDecorator'],
-		coverageOptions: goConfig['coverageOptions'],
-		useDiffForFormatting: goConfig['useDiffForFormatting'] + '',
-		gopath: goConfig['gopath'] ? 'set' : '',
-		goroot: goConfig['goroot'] ? 'set' : '',
-		inferGopath: goConfig['inferGopath'] + '',
-		toolsGopath: goConfig['toolsGopath'] ? 'set' : '',
-		gocodeAutoBuild: goConfig['gocodeAutoBuild'] + '',
-		useCodeSnippetsOnFunctionSuggest: goConfig['useCodeSnippetsOnFunctionSuggest'] + '',
-		autocompleteUnimportedPackages: goConfig['autocompleteUnimportedPackages'] + '',
-		docsTool: goConfig['docsTool'],
-		useLanguageServer: goConfig['useLanguageServer'] + '',
-		includeImports: goConfig['gotoSymbol'] && goConfig['gotoSymbol']['includeImports'] + '',
-		addTags: JSON.stringify(goConfig['addTags']),
-		removeTags: JSON.stringify(goConfig['removeTags']),
-		editorContextMenuCommands: JSON.stringify(goConfig['editorContextMenuCommands']),
-		liveErrors: JSON.stringify(goConfig['liveErrors']),
-		codeLens: JSON.stringify(goConfig['enableCodeLens'])
+function sendTelemetryEventForConfig(m2Config: vscode.WorkspaceConfiguration) {
+	sendTelemetryEvent('m2Config', {
+		buildOnSave: m2Config['buildOnSave'] + '',
+		buildFlags: m2Config['buildFlags'],
+		buildTags: m2Config['buildTags'],
+		formatOnSave: m2Config['formatOnSave'] + '',
+		formatTool: m2Config['formatTool'],
+		formatFlags: m2Config['formatFlags'],
+		lintOnSave: m2Config['lintOnSave'] + '',
+		lintFlags: m2Config['lintFlags'],
+		lintTool: m2Config['lintTool'],
+		vetOnSave: m2Config['vetOnSave'] + '',
+		vetFlags: m2Config['vetFlags'],
+		testOnSave: m2Config['testOnSave'] + '',
+		testFlags: m2Config['testFlags'],
+		coverOnSave: m2Config['coverOnSave'] + '',
+		coverOnTestPackage: m2Config['coverOnTestPackage'] + '',
+		coverageDecorator: m2Config['coverageDecorator'],
+		coverageOptions: m2Config['coverageOptions'],
+		useDiffForFormatting: m2Config['useDiffForFormatting'] + '',
+		gopath: m2Config['gopath'] ? 'set' : '',
+		goroot: m2Config['goroot'] ? 'set' : '',
+		inferGopath: m2Config['inferGopath'] + '',
+		toolsGopath: m2Config['toolsGopath'] ? 'set' : '',
+		gocodeAutoBuild: m2Config['gocodeAutoBuild'] + '',
+		useCodeSnippetsOnFunctionSuggest: m2Config['useCodeSnippetsOnFunctionSuggest'] + '',
+		autocompleteUnimportedPackages: m2Config['autocompleteUnimportedPackages'] + '',
+		docsTool: m2Config['docsTool'],
+		useLanguageServer: m2Config['useLanguageServer'] + '',
+		includeImports: m2Config['gotoSymbol'] && m2Config['gotoSymbol']['includeImports'] + '',
+		addTags: JSON.stringify(m2Config['addTags']),
+		removeTags: JSON.stringify(m2Config['removeTags']),
+		editorContextMenuCommands: JSON.stringify(m2Config['editorContextMenuCommands']),
+		liveErrors: JSON.stringify(m2Config['liveErrors']),
+		codeLens: JSON.stringify(m2Config['enableCodeLens'])
 	});
 }
 

@@ -113,7 +113,7 @@ function runTool(args: string[], cwd: string, severity: string, useStdErr: boole
 	});
 }
 
-export function check(filename: string, goConfig: vscode.WorkspaceConfiguration): Promise<ICheckResult[]> {
+export function check(filename: string, m2Config: vscode.WorkspaceConfiguration): Promise<ICheckResult[]> {
 	outputChannel.clear();
 	let runningToolsPromises = [];
 	let cwd = path.dirname(filename);
@@ -132,16 +132,16 @@ export function check(filename: string, goConfig: vscode.WorkspaceConfiguration)
 			return testPromise;
 		}
 
-		let buildFlags = goConfig['testFlags'] || goConfig['buildFlags'] || [];
+		let buildFlags = m2Config['testFlags'] || m2Config['buildFlags'] || [];
 
 		let args = buildFlags;
-		if (goConfig['coverOnSave']) {
+		if (m2Config['coverOnSave']) {
 			tmpCoverPath = path.normalize(path.join(os.tmpdir(), 'go-code-cover'));
 			args = ['-coverprofile=' + tmpCoverPath, ...buildFlags];
 		}
 
 		testPromise = goTest({
-			goConfig: goConfig,
+			m2Config: m2Config,
 			dir: cwd,
 			flags: args,
 			background: true
@@ -149,9 +149,9 @@ export function check(filename: string, goConfig: vscode.WorkspaceConfiguration)
 		return testPromise;
 	};
 
-	if (!!goConfig['buildOnSave'] && goConfig['buildOnSave'] !== 'off') {
+	if (!!m2Config['buildOnSave'] && m2Config['buildOnSave'] !== 'off') {
 		const tmpPath = path.normalize(path.join(os.tmpdir(), 'go-code-check'));
-		let buildFlags = goConfig['buildFlags'] || [];
+		let buildFlags = m2Config['buildFlags'] || [];
 		// Remove the -i flag as it will be added later anyway
 		if (buildFlags.indexOf('-i') > -1) {
 			buildFlags.splice(buildFlags.indexOf('-i'), 1);
@@ -159,12 +159,12 @@ export function check(filename: string, goConfig: vscode.WorkspaceConfiguration)
 
 		// We use `go test` instead of `go build` because the latter ignores test files
 		let buildArgs: string[] = ['test', '-i', '-c', '-o', tmpPath, ...buildFlags];
-		if (goConfig['buildTags'] && buildFlags.indexOf('-tags') === -1) {
+		if (m2Config['buildTags'] && buildFlags.indexOf('-tags') === -1) {
 			buildArgs.push('-tags');
-			buildArgs.push('"' + goConfig['buildTags'] + '"');
+			buildArgs.push('"' + m2Config['buildTags'] + '"');
 		}
 
-		if (goConfig['buildOnSave'] === 'workspace') {
+		if (m2Config['buildOnSave'] === 'workspace') {
 			let buildPromises = [];
 			let outerBuildPromise = getNonVendorPackages(vscode.workspace.rootPath).then(pkgs => {
 				buildPromises = pkgs.map(pkgPath => {
@@ -200,7 +200,7 @@ export function check(filename: string, goConfig: vscode.WorkspaceConfiguration)
 		}
 	}
 
-	if (!!goConfig['testOnSave']) {
+	if (!!m2Config['testOnSave']) {
 		statusBarItem.show();
 		statusBarItem.text = 'Tests Running';
 		runTest().then(success => {
@@ -215,9 +215,9 @@ export function check(filename: string, goConfig: vscode.WorkspaceConfiguration)
 		});
 	}
 
-	if (!!goConfig['lintOnSave'] && goConfig['lintOnSave'] !== 'off') {
-		let lintTool = goConfig['lintTool'] || 'golint';
-		let lintFlags: string[] = goConfig['lintFlags'] || [];
+	if (!!m2Config['lintOnSave'] && m2Config['lintOnSave'] !== 'off') {
+		let lintTool = m2Config['lintTool'] || 'golint';
+		let lintFlags: string[] = m2Config['lintFlags'] || [];
 		let lintEnv = Object.assign({}, env);
 		let args = [];
 		let configFlag = '--config=';
@@ -238,16 +238,16 @@ export function check(filename: string, goConfig: vscode.WorkspaceConfiguration)
 			if (args.indexOf('--aggregate') === -1) {
 				args.push('--aggregate');
 			}
-			if (goConfig['toolsGopath']) {
+			if (m2Config['toolsGopath']) {
 				// gometalinter will expect its linters to be in the M2PATH
 				// So add the toolsGopath to M2PATH
-				lintEnv['M2PATH'] += path.delimiter + goConfig['toolsGopath'];
+				lintEnv['M2PATH'] += path.delimiter + m2Config['toolsGopath'];
 			}
 		}
 
 		let lintWorkDir = cwd;
 
-		if (goConfig['lintOnSave'] === 'workspace') {
+		if (m2Config['lintOnSave'] === 'workspace') {
 			args.push('./...');
 			lintWorkDir = vscode.workspace.rootPath;
 		}
@@ -262,12 +262,12 @@ export function check(filename: string, goConfig: vscode.WorkspaceConfiguration)
 		));
 	}
 
-	if (!!goConfig['vetOnSave'] && goConfig['vetOnSave'] !== 'off') {
-		let vetFlags = goConfig['vetFlags'] || [];
+	if (!!m2Config['vetOnSave'] && m2Config['vetOnSave'] !== 'off') {
+		let vetFlags = m2Config['vetFlags'] || [];
 		let vetArgs = ['tool', 'vet', ...vetFlags, '.'];
 		let vetWorkDir = cwd;
 
-		if (goConfig['vetOnSave'] === 'workspace') {
+		if (m2Config['vetOnSave'] === 'workspace') {
 			vetWorkDir = vscode.workspace.rootPath;
 		}
 
@@ -281,7 +281,7 @@ export function check(filename: string, goConfig: vscode.WorkspaceConfiguration)
 		));
 	}
 
-	if (!!goConfig['coverOnSave']) {
+	if (!!m2Config['coverOnSave']) {
 		runTest().then(success => {
 			if (!success) {
 				return [];

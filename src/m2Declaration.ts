@@ -24,17 +24,17 @@ export interface GoDefinitionInformation {
 	toolUsed: string;
 }
 
-export function definitionLocation(document: vscode.TextDocument, position: vscode.Position, goConfig: vscode.WorkspaceConfiguration, includeDocs = true): Promise<GoDefinitionInformation> {
+export function definitionLocation(document: vscode.TextDocument, position: vscode.Position, m2Config: vscode.WorkspaceConfiguration, includeDocs = true): Promise<GoDefinitionInformation> {
 	let wordRange = document.getWordRangeAtPosition(position);
 	let lineText = document.lineAt(position.line).text;
 	let word = wordRange ? document.getText(wordRange) : '';
 	if (!wordRange || lineText.startsWith('//') || isPositionInString(document, position) || word.match(/^\d+.?\d+$/) || monkey2Keywords.indexOf(word) > 0) {
 		return Promise.resolve(null);
 	}
-	if (!goConfig) {
-		goConfig = vscode.workspace.getConfiguration('m2');
+	if (!m2Config) {
+		m2Config = vscode.workspace.getConfiguration('m2');
 	}
-	let toolForDocs = goConfig['docsTool'] || 'godoc';
+	let toolForDocs = m2Config['docsTool'] || 'godoc';
 	let offset = byteOffsetAt(document, position);
 	let env = getToolsEnvVars();
 	return getMonkey2Version().then((ver: SemVersion) => {
@@ -200,15 +200,15 @@ function definitionLocation_guru(document: vscode.TextDocument, position: vscode
 }
 
 
-export class GoDefinitionProvider implements vscode.DefinitionProvider {
-	private goConfig = null;
+export class Monkey2DefinitionProvider implements vscode.DefinitionProvider {
+	private m2Config = null;
 
-	constructor(goConfig?: vscode.WorkspaceConfiguration) {
-		this.goConfig = goConfig;
+	constructor(m2Config?: vscode.WorkspaceConfiguration) {
+		this.m2Config = m2Config;
 	}
 
 	public provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.Location> {
-		return definitionLocation(document, position, this.goConfig, false).then(definitionInfo => {
+		return definitionLocation(document, position, this.m2Config, false).then(definitionInfo => {
 			if (definitionInfo == null || definitionInfo.file == null) return null;
 			let definitionResource = vscode.Uri.file(definitionInfo.file);
 			let pos = new vscode.Position(definitionInfo.line, definitionInfo.column);

@@ -92,15 +92,15 @@ export function toggleCoverageCurrentPackage() {
 		}
 	}
 
-	// FIXME: is there a better way to get goConfig?
-	let goConfig = vscode.workspace.getConfiguration('m2');
+	// FIXME: is there a better way to get m2Config?
+	let m2Config = vscode.workspace.getConfiguration('m2');
 	let cwd = path.dirname(editor.document.uri.fsPath);
 
-	let buildFlags = goConfig['testFlags'] || goConfig['buildFlags'] || [];
+	let buildFlags = m2Config['testFlags'] || m2Config['buildFlags'] || [];
 	let tmpCoverPath = path.normalize(path.join(os.tmpdir(), 'go-code-cover'));
 	let args = ['-coverprofile=' + tmpCoverPath, ...buildFlags];
 	return goTest({
-		goConfig: goConfig,
+		m2Config: m2Config,
 		dir: cwd,
 		flags: args,
 		background: true

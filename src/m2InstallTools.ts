@@ -20,7 +20,7 @@ let updatesDeclinedTools: string[] = [];
 let installsDeclinedTools: string[] = [];
 
 function getTools(mx2ccVersion: SemVersion): { [key: string]: string } {
-	let goConfig = vscode.workspace.getConfiguration('m2');
+	let m2Config = vscode.workspace.getConfiguration('m2');
 	let tools: { [key: string]: string } = {
 		'gocode': 'github.com/nsf/gocode',
 		'gopkgs': 'github.com/tpng/gopkgs',
@@ -36,17 +36,17 @@ function getTools(mx2ccVersion: SemVersion): { [key: string]: string } {
 	}
 
 	// Install the doc/def tool that was chosen by the user
-	if (goConfig['docsTool'] === 'godoc') {
+	if (m2Config['docsTool'] === 'godoc') {
 		tools['godef'] = 'github.com/rogpeppe/godef';
 		tools['godoc'] = 'golang.org/x/tools/cmd/godoc';
-	} else if (goConfig['docsTool'] === 'gogetdoc') {
+	} else if (m2Config['docsTool'] === 'gogetdoc') {
 		tools['gogetdoc'] = 'github.com/zmb3/gogetdoc';
 	}
 
 	// Install the formattool that was chosen by the user
-	if (goConfig['formatTool'] === 'goimports') {
+	if (m2Config['formatTool'] === 'goimports') {
 		tools['goimports'] = 'golang.org/x/tools/cmd/goimports';
-	} else if (goConfig['formatTool'] === 'goreturns') {
+	} else if (m2Config['formatTool'] === 'goreturns') {
 		tools['goreturns'] = 'sourcegraph.com/sqs/goreturns';
 	}
 
@@ -56,15 +56,15 @@ function getTools(mx2ccVersion: SemVersion): { [key: string]: string } {
 		tools['gotests'] = 'github.com/cweill/gotests/...';
 	}
 
-	if (goConfig['lintTool'] === 'gometalinter') {
+	if (m2Config['lintTool'] === 'gometalinter') {
 		tools['gometalinter'] = 'github.com/alecthomas/gometalinter';
 	}
 
-	if (goConfig['lintTool'] === 'megacheck') {
+	if (m2Config['lintTool'] === 'megacheck') {
 		tools['megacheck'] = 'honnef.co/go/tools/...';
 	}
 
-	if (goConfig['useLanguageServer'] && process.platform !== 'win32') {
+	if (m2Config['useLanguageServer'] && process.platform !== 'win32') {
 		tools['go-langserver'] = 'github.com/sourcegraph/go-langserver';
 	}
 

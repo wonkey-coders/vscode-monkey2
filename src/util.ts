@@ -228,8 +228,8 @@ export function isPositionInString(document: vscode.TextDocument, position: vsco
 }
 
 export function getToolsGopath(): string {
-	let goConfig = vscode.workspace.getConfiguration('m2');
-	let toolsGopath = goConfig['toolsGopath'];
+	let m2Config = vscode.workspace.getConfiguration('m2');
+	let toolsGopath = m2Config['toolsGopath'];
 	if (toolsGopath) {
 		toolsGopath = resolvePath(toolsGopath, vscode.workspace.rootPath);
 	}
