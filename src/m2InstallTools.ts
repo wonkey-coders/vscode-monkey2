@@ -258,7 +258,7 @@ export function offerToInstallTools() {
 		getMissingTools(mx2ccVersion).then(missing => {
 			if (missing.length > 0) {
 				showGoStatus('Analysis Tools Missing', 'go.promptforinstall', 'Not all Go tools are available on the M2PATH');
-				vscode.commands.registerCommand('go.promptforinstall', () => {
+				vscode.commands.registerCommand('m2.promptforinstall', () => {
 					promptForInstall(mx2ccVersion, missing);
 					hideGoStatus();
 				});

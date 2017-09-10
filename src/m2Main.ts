@@ -11,7 +11,7 @@ import { GoHoverProvider } from './m2ExtraInfo';
 import { Monkey2DefinitionProvider } from './m2Declaration';
 import { GoReferenceProvider } from './m2References';
 import { Monkey2ImplementationProvider } from './m2Implementations';
-import { GoDocumentFormattingEditProvider, Formatter } from './m2Format';
+import { Monkey2DocumentFormattingEditProvider, Formatter } from './m2Format';
 import { GoRenameProvider } from './m2Rename';
 import { GoDocumentSymbolProvider } from './m2Outline';
 import { GoRunTestCodeLensProvider } from './m2RunTestCodelens';
@@ -36,7 +36,7 @@ import { addTags, removeTags } from './m2Modifytags';
 import { parseLiveFile } from './m2LiveErrors';
 import { GoCodeLensProvider } from './m2Codelens';
 import { implCursor } from './m2Impl';
-import { goListAll } from './m2Packages';
+import { monkey2ListModules } from './m2Packages';
 import { browsePackages } from './m2BrowsePackage';
 
 export let errorDiagnosticCollection: vscode.DiagnosticCollection;
@@ -58,7 +58,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 						const updateToolsCmdText = 'Update tools';
 						vscode.window.showInformationMessage('Your Go version is different than before, few Go tools may need re-compiling', updateToolsCmdText).then(selected => {
 							if (selected === updateToolsCmdText) {
-								vscode.commands.executeCommand('go.tools.install');
+								vscode.commands.executeCommand('m2.tools.install');
 							}
 						});
 					}
@@ -66,7 +66,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 				}
 			}
 		});
-		goListAll();
+		monkey2ListModules();
 		offerToInstallTools();
 		let langServerAvailable = checkLanguageServer();
 		if (langServerAvailable) {
@@ -107,8 +107,8 @@ export function activate(ctx: vscode.ExtensionContext): void {
 
 	initGoCover(ctx);
 
-	ctx.subscriptions.push(vscode.languages.registerCompletionItemProvider(MONKEY2_FILE_FILTER, new GoCompletionItemProvider(), '.', '\"'));
-	ctx.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(MONKEY2_FILE_FILTER, new GoDocumentFormattingEditProvider()));
+//	ctx.subscriptions.push(vscode.languages.registerCompletionItemProvider(MONKEY2_FILE_FILTER, new GoCompletionItemProvider(), '.', '\"'));
+	ctx.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(MONKEY2_FILE_FILTER, new Monkey2DocumentFormattingEditProvider()));
 	ctx.subscriptions.push(vscode.languages.registerRenameProvider(MONKEY2_FILE_FILTER, new GoRenameProvider()));
 	ctx.subscriptions.push(vscode.languages.registerCodeActionsProvider(MONKEY2_FILE_FILTER, new GoCodeActionProvider()));
 	ctx.subscriptions.push(vscode.languages.registerCodeLensProvider(MONKEY2_FILE_FILTER, new GoRunTestCodeLensProvider()));
@@ -126,9 +126,9 @@ export function activate(ctx: vscode.ExtensionContext): void {
 
 	startBuildOnSaveWatcher(ctx.subscriptions);
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.gopath', () => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.gopath', () => {
 		let gopath = getCurrentMonkey2Path();
-		let wasInfered = vscode.workspace.getConfiguration('m2')['inferGopath'];
+		let wasInfered = vscode.workspace.getConfiguration('m2')['inferPath'];
 
 		// not only if it was configured, but if it was successful.
 		if (wasInfered && vscode.workspace.rootPath.indexOf(gopath) === 0) {
@@ -138,59 +138,59 @@ export function activate(ctx: vscode.ExtensionContext): void {
 		}
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.add.tags', (args) => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.add.tags', (args) => {
 		addTags(args);
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.remove.tags', (args) => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.remove.tags', (args) => {
 		removeTags(args);
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.impl.cursor', () => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.impl.cursor', () => {
 		implCursor();
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.cursor', (args) => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.test.cursor', (args) => {
 		let m2Config = vscode.workspace.getConfiguration('m2');
 		testAtCursor(m2Config, args);
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.package', (args) => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.test.package', (args) => {
 		let m2Config = vscode.workspace.getConfiguration('m2');
 		testCurrentPackage(m2Config, args);
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.file', (args) => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.test.file', (args) => {
 		let m2Config = vscode.workspace.getConfiguration('m2');
 		testCurrentFile(m2Config, args);
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.workspace', (args) => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.test.workspace', (args) => {
 		let m2Config = vscode.workspace.getConfiguration('m2');
 		testWorkspace(m2Config, args);
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.previous', () => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.test.previous', () => {
 		testPrevious();
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.coverage', () => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.test.coverage', () => {
 		toggleCoverageCurrentPackage();
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.showOutput', () => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.test.showOutput', () => {
 		showTestOutput();
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.import.add', (arg: string) => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.import.add', (arg: string) => {
 		return addImport(typeof arg === 'string' ? arg : null);
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.tools.install', () => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.tools.install', () => {
 		installAllTools();
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.browse.packages', () => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.browse.packages', () => {
 		browsePackages();
 	}));
 
@@ -219,32 +219,32 @@ export function activate(ctx: vscode.ExtensionContext): void {
 
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.generate.package', () => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.test.generate.package', () => {
 		goGenerateTests.generateTestCurrentPackage();
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.generate.file', () => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.test.generate.file', () => {
 		goGenerateTests.generateTestCurrentFile();
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.test.generate.function', () => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.test.generate.function', () => {
 		goGenerateTests.generateTestCurrentFunction();
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.toggle.test.file', () => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.toggle.test.file', () => {
 		goGenerateTests.toggleTestFile();
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.debug.startSession', config => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.debug.startSession', config => {
 		if (!config.request) { // if 'request' is missing interpret this as a missing launch.json
 			let activeEditor = vscode.window.activeTextEditor;
-			if (!activeEditor || activeEditor.document.languageId !== 'm2') {
+			if (!activeEditor || activeEditor.document.languageId !== 'monkey2') {
 				return;
 			}
 
 			config = Object.assign(config, {
 				'name': 'Launch',
-				'type': 'm2',
+				'type': 'monkey2',
 				'request': 'launch',
 				'mode': 'debug',
 				'program': activeEditor.document.fileName,
@@ -256,7 +256,7 @@ export function activate(ctx: vscode.ExtensionContext): void {
 		vscode.commands.executeCommand('vscode.startDebug', config);
 	}));
 
-	ctx.subscriptions.push(vscode.commands.registerCommand('go.show.commands', () => {
+	ctx.subscriptions.push(vscode.commands.registerCommand('m2.show.commands', () => {
 		vscode.window.showQuickPick(getExtensionCommands().map(x => x.title)).then(cmd => {
 			let selectedCmd = getExtensionCommands().find(x => x.title === cmd);
 			if (selectedCmd) {
@@ -391,9 +391,9 @@ function sendTelemetryEventForConfig(m2Config: vscode.WorkspaceConfiguration) {
 		coverageDecorator: m2Config['coverageDecorator'],
 		coverageOptions: m2Config['coverageOptions'],
 		useDiffForFormatting: m2Config['useDiffForFormatting'] + '',
-		gopath: m2Config['gopath'] ? 'set' : '',
-		goroot: m2Config['goroot'] ? 'set' : '',
-		inferGopath: m2Config['inferGopath'] + '',
+		m2path: m2Config['path'] ? 'set' : '',
+		m2root: m2Config['root'] ? 'set' : '',
+		inferPath: m2Config['inferPath'] + '',
 		toolsGopath: m2Config['toolsGopath'] ? 'set' : '',
 		gocodeAutoBuild: m2Config['gocodeAutoBuild'] + '',
 		useCodeSnippetsOnFunctionSuggest: m2Config['useCodeSnippetsOnFunctionSuggest'] + '',

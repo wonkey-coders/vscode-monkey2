@@ -19,7 +19,7 @@ import { getBinPath, parseFilePrelude, getCurrentMonkey2Path, getToolsEnvVars } 
 import { getNonVendorPackages } from './m2Packages';
 
 let statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-statusBarItem.command = 'go.test.showOutput';
+statusBarItem.command = 'm2.test.showOutput';
 
 export function removeTestStatus(e: vscode.TextDocumentChangeEvent) {
 	if (e.document.isUntitled) {

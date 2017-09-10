@@ -9,7 +9,7 @@ import vscode = require('vscode');
 import cp = require('child_process');
 import { getMonkey2RuntimePath } from './m2Path';
 import path = require('path');
-import { goListAll, isGoListComplete } from './m2Packages';
+import { monkey2ListModules, isGoListComplete } from './m2Packages';
 
 export function browsePackages() {
 	let selectedText = '';
@@ -74,7 +74,7 @@ function showPackageList() {
 		return showTryAgainLater();
 	}
 
-	goListAll().then(pkgMap => {
+	monkey2ListModules().then(pkgMap => {
 		const pkgs: string[] = Array.from(pkgMap.keys());
 		if (!pkgs || pkgs.length === 0) {
 			return vscode.window.showErrorMessage('Could not find packages. Ensure `go list all` runs successfully.');

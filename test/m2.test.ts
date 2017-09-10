@@ -21,7 +21,7 @@ import { getBinPath, getMonkey2Version, isVendorSupported } from '../src/util';
 import { documentSymbols } from '../src/m2Outline';
 import { listPackages } from '../src/m2Import';
 import { generateTestCurrentFile, generateTestCurrentPackage, generateTestCurrentFunction } from '../src/m2GenerateTests';
-import { goListAll } from '../src/m2Packages';
+import { monkey2ListModules } from '../src/m2Packages';
 
 suite('Go Extension Tests', () => {
 	let gopath = process.env['M2PATH'];
@@ -31,7 +31,7 @@ suite('Go Extension Tests', () => {
 	let generateTestsSourcePath = path.join(repoPath, 'generatetests');
 	let generateFunctionTestSourcePath = path.join(repoPath, 'generatefunctiontest');
 	let generatePackageTestSourcePath = path.join(repoPath, 'generatePackagetest');
-	let goListAllPromise = goListAll();
+	let monkey2ListModulesPromise = monkey2ListModules();
 
 	suiteSetup(() => {
 		assert.ok(gopath !== null, 'M2PATH is not defined');
@@ -721,7 +721,7 @@ It returns the number of bytes written and any write error encountered.
 					editbuilder.insert(new vscode.Position(12, 1), 'by\n');
 					editbuilder.insert(new vscode.Position(13, 0), 'math.\n');
 				}).then(() => {
-					return goListAllPromise.then(() => {
+					return monkey2ListModulesPromise.then(() => {
 						let promises = testCases.map(([position, expected]) =>
 							provider.provideCompletionItemsInternal(editor.document, position, null, config).then(items => {
 								let labels = items.map(x => x.label);

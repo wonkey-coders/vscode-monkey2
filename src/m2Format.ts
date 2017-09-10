@@ -18,7 +18,7 @@ export class Formatter {
 	public formatDocument(document: vscode.TextDocument): Thenable<vscode.TextEdit[]> {
 		return new Promise((resolve, reject) => {
 			let filename = document.fileName;
-			let formatTool = vscode.workspace.getConfiguration('m2')['formatTool'] || 'goreturns';
+			let formatTool = vscode.workspace.getConfiguration('m2')['formatTool'] || 'mx2format';
 			let formatCommandBinPath = getBinPath(formatTool);
 			let formatFlags = vscode.workspace.getConfiguration('m2')['formatFlags'] || [];
 			let canFormatToolUseDiff = vscode.workspace.getConfiguration('m2')['useDiffForFormatting'] && isDiffToolAvailable();
@@ -59,7 +59,7 @@ export class Formatter {
 	}
 }
 
-export class GoDocumentFormattingEditProvider implements vscode.DocumentFormattingEditProvider {
+export class Monkey2DocumentFormattingEditProvider implements vscode.DocumentFormattingEditProvider {
 	private formatter: Formatter;
 
 	constructor() {

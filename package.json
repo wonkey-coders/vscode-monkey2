@@ -56,9 +56,9 @@
   },
   "activationEvents": [
     "onLanguage:monkey2",
-    "onCommand:monkey2.monkey2path",
-    "onCommand:monkey2.tools.install",
-    "onCommand:monkey2.debug.startSession"
+    "onCommand:m2.path",
+    "onCommand:m2.tools.install",
+    "onCommand:m2.debug.startSession"
   ],
   "main": "./out/src/m2Main",
   "contributes": {
@@ -177,13 +177,13 @@
         "label": "Monkey2",
         "enableBreakpointsFor": {
           "languageIds": [
-            "m2"
+            "monkey2"
           ]
         },
         "program": "./out/src/debugAdapter/goDebug.js",
         "runtime": "node",
         "languages": [
-          "m2"
+          "monkey2"
         ],
         "startSessionCommand": "m2.debug.startSession",
         "configurationSnippets": [
@@ -192,7 +192,7 @@
             "description": "Debug the package in the program attribute",
             "body": {
               "name": "${2:Launch Package}",
-              "type": "m2",
+              "type": "monkey2",
               "request": "launch",
               "mode": "debug",
               "program": "^\"\\${workspaceRoot}${1:}\""
@@ -203,7 +203,7 @@
             "description": "Debug the file in the program attribute",
             "body": {
               "name": "${2:Launch file}",
-              "type": "m2",
+              "type": "monkey2",
               "request": "launch",
               "mode": "debug",
               "program": "^\"${1:\\${file}}\""
@@ -214,7 +214,7 @@
             "description": "Debug the test package in the program attribute",
             "body": {
               "name": "${2:Launch test package}",
-              "type": "m2",
+              "type": "monkey2",
               "request": "launch",
               "mode": "test",
               "program": "^\"\\${workspaceRoot}${1:}\""
@@ -225,7 +225,7 @@
             "description": "Debug the test function in the args, ensure program attributes points to right package",
             "body": {
               "name": "${3:Launch test function}",
-              "type": "m2",
+              "type": "monkey2",
               "request": "launch",
               "mode": "test",
               "program": "^\"\\${workspaceRoot}${1:}\"",
@@ -239,7 +239,7 @@
         "initialConfigurations": [
           {
             "name": "Launch",
-            "type": "m2",
+            "type": "monkey2",
             "request": "launch",
             "mode": "debug",
             "remotePath": "",
@@ -434,12 +434,10 @@
         },
         "m2.formatTool": {
           "type": "string",
-          "default": "m2returns",
-          "description": "Pick 'gofmt', 'goimports' or 'goreturns' to run on format.",
+          "default": "mx2format",
+          "description": "Pick 'mx2format' to run on format.",
           "enum": [
-            "m2fmt",
-            "m2imports",
-            "m2returns"
+            "mx2format"
           ]
         },
         "m2.formatFlags": {
@@ -468,10 +466,10 @@
           "default": null,
           "description": "Specify PATH here to override the one that is set as environment variable. The inferred PATH from workspace root overrides this, if m2.inferpath is set to true."
         },
-        "m2.toolsGopath": {
+        "m2.toolsPath": {
           "type": "string",
           "default": "",
-          "description": "Location to install the Go tools that the extension depends on if you don't want them in your M2PATH."
+          "description": "Location to install the Monkey2 tools that the extension depends on if you don't want them in your M2PATH."
         },
         "m2.root": {
           "type": [

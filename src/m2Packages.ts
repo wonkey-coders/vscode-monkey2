@@ -5,18 +5,18 @@ import { getMonkey2RuntimePath, getCurrentWorkspaceFromM2PATH } from './m2Path';
 import { isVendorSupported, getCurrentMonkey2Path, getToolsEnvVars } from './util';
 
 let allPkgs = new Map<string, string>();
-let goListAllCompleted: boolean = false;
-let goListAllPromise: Promise<Map<string, string>>;
+let monkey2ListModulesCompleted: boolean = false;
+let monkey2ListModulesPromise: Promise<Map<string, string>>;
 
 export function isGoListComplete(): boolean {
-	return goListAllCompleted;
+	return monkey2ListModulesCompleted;
 }
 
 /**
  * Runs go list all
  * @returns Map<string, string> mapping between package import path and package name
  */
-export function goListAll(): Promise<Map<string, string>> {
+export function monkey2ListModules(): Promise<Map<string, string>> {
 	let m2RuntimePath = getMonkey2RuntimePath();
 
 	if (!m2RuntimePath) {
@@ -24,14 +24,14 @@ export function goListAll(): Promise<Map<string, string>> {
 		return Promise.resolve(null);
 	}
 
-	if (goListAllPromise) {
-		return goListAllPromise;
+	if (monkey2ListModulesPromise) {
+		return monkey2ListModulesPromise;
 	}
 
-	goListAllPromise = new Promise<Map<string, string>>((resolve, reject) => {
+	monkey2ListModulesPromise = new Promise<Map<string, string>>((resolve, reject) => {
 		// Use `{env: {}}` to make the execution faster. Include M2PATH to account if custom work space exists.
 		const env: any = getToolsEnvVars();
-
+/*
 		const cmd = cp.spawn(m2RuntimePath, ['list', '-f', '{{.Name}};{{.ImportPath}}', 'all'], { env: env });
 		const chunks = [];
 		cmd.stdout.on('data', (d) => {
@@ -44,12 +44,16 @@ export function goListAll(): Promise<Map<string, string>> {
 				let [pkgName, pkgPath] = pkgDetail.trim().split(';');
 				allPkgs.set(pkgPath, pkgName);
 			});
-			goListAllCompleted = true;
+			monkey2ListModulesCompleted = true;
 			return resolve(allPkgs);
 		});
+*/		
+		allPkgs.set('monkey2', "modules/monkey2");
+		
+		return resolve(allPkgs);
 	});
 
-	return goListAllPromise;
+	return monkey2ListModulesPromise;
 }
 
 /**
@@ -59,7 +63,7 @@ export function goListAll(): Promise<Map<string, string>> {
  */
 export function getImportablePackages(filePath: string): Promise<Map<string, string>> {
 
-	return Promise.all([isVendorSupported(), goListAll()]).then(values => {
+	return Promise.all([isVendorSupported(), monkey2ListModules()]).then(values => {
 		let isVendorSupported = values[0];
 		let currentFileDirPath = path.dirname(filePath);
 		let currentWorkspace = getCurrentWorkspaceFromM2PATH(getCurrentMonkey2Path(), currentFileDirPath);
