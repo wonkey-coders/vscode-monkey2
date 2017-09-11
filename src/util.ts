@@ -12,7 +12,7 @@ import fs = require('fs');
 
 const extensionId: string = 'nitrologic.monkey2';
 const extensionVersion: string = vscode.extensions.getExtension(extensionId).packageJSON.version;
-const aiKey: string = 'AIF-56fe259a-f869-438a-9eff-928c454c1ec4';
+const telemetryKey: string = 'AIF-56fe259a-f869-438a-9eff-928c454c1ec4';
 
 export const monkey2Keywords: string[] = [
 	'End',
@@ -212,7 +212,7 @@ export function sendTelemetryEvent(eventName: string, properties?: {
 }): void {
 
 	let temp = vscode.extensions.getExtension(extensionId).packageJSON.contributes;
-	telemtryReporter = telemtryReporter ? telemtryReporter : new TelemetryReporter(extensionId, extensionVersion, aiKey);
+	telemtryReporter = telemtryReporter ? telemtryReporter : new TelemetryReporter(extensionId, extensionVersion, telemetryKey);
 	telemtryReporter.sendTelemetryEvent(eventName, properties, measures);
 }
 

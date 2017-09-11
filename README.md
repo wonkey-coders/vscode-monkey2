@@ -18,6 +18,10 @@ Monkey2Version based on output of mx2cc binary tested on Windows only.
 
 No features of any value yet implemented.
 
+Temporary textmate grammar file from monkey-x borrowed from here 
+
+https://github.com/gingerbeardman/monkey.tmbundle
+
 ## Help Needed
 
 Help is needed in getting this project off the ground.
